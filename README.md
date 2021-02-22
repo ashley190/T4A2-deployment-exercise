@@ -165,7 +165,15 @@ The steps involved in the Continuous Integration(CI) workflow upon pushing onto 
 <!-- Pending deployment -->
 
 ## Endpoint documentation
+**Web endpoints**
+
 Endpoints are documented in the formats below. These do not subscribe to the RESTful convention due to restrictions on methods such as PUT, PATCH and DELETE on web browsers:
 
 * [Raw format](docs/web_endpoints.yml)
 * [Swagger viewer](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/ashley190/T4A2/main/docs/web_endpoints.yml)
+
+**API endpoints**
+API endpoints following restful conventions are documented in the formats below:-
+
+* [Raw format](docs/api_endpoints.yml)
+* [Swagger viewer](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/ashley190/T4A2/main/docs/api_endpoints.yml)

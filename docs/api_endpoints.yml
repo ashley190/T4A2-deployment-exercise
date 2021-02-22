@@ -1,0 +1,499 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: MyLocale API endpoints
+tags:
+- name: "users"
+  description: "User related functions"
+- name: "profile"
+  description: "Profile functions"
+- name: "groups"
+  description: "Group functions"
+- name: "posts"
+  description: "Post functions"
+paths:
+  /users/register/:
+    post:
+      tags:
+      - "users"
+      summary: "User registration"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Creates new user in database"
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+              password:
+                type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "email already exists"
+  /users/login/:
+    post:
+      tags: 
+      - "users"
+      summary: "Logs user into system"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Logs in user"
+        schema:
+          type: "object"
+          properties:
+            username:
+              type: "string"
+            password:
+              type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "incorrect login credentials"
+  /profile/{profile_id}:
+    get:
+      tags:
+      - "profile"
+      summary: "View profile by id"
+      parameters:
+      - name: "profile_id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "Invalid user"
+        "404":
+          description: "user not found"
+    post:
+      tags:
+      - "profile"
+      summary: "Create new profile under user_id"
+      parameters:
+        - name: "profile_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Creates new profile under user_id"
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "Invalid user"
+        "400":
+          description: "Invalid fields entered"
+    patch:
+      tags:
+      - "profile"
+      summary: "Update profile details"
+      parameters:
+      - name: "profile_id"
+        in: "path"
+        required: true
+        type: "integer"
+      - name: "body"
+        in: "body"
+        description: "profile fields to be updated"
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "invalid profile"
+        "404":
+          description: "profile not found"
+  /profile/{profile_id}/addlocation:
+    post:
+      tags:
+      - "profile"
+      summary: "Add new location under profile_id"
+      parameters:
+        - name: "profile_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Add new profile location"
+          schema:
+            type: "object"
+            properties:
+              suburb:
+                type: "string"
+              state:
+                type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "Invalid user"
+        "400":
+          description: "Invalid fields entered"
+  /profile/{profile_id}/uploadimage/:
+    post:
+      tags:
+        - "profile"
+      summary: "uploads profile picture"
+      consumes:
+      - "multipart/form-data"
+      parameters:
+        - name: "profile_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "additionalMetadata"
+          in: "formData"
+          description: "Additional data to pass to server"
+          required: false
+          type: "string"
+        - name: "file"
+          in: "formData"
+          description: "file to upload"
+          required: true
+          type: "file"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Upload error"
+  /groups/:
+    get:
+      tags:
+      - "groups"
+      summary: "Display groups"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "invalid user"
+        "404":
+          description: "Profile not found"
+    post:
+      tags:
+      - "groups"
+      summary: "Create new group"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Creates new group"
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            description:
+              type: "string"
+            location:
+              type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid input"
+        "404":
+          description: "Profile not found"
+  /groups/recommendations/:
+    get:
+      tags:
+      - "groups"
+      summary: "Get group recommendations"
+      responses:
+        "200":
+          description: "successful operation"
+  /groups/{group_id}:
+    get:
+      tags:
+      - "groups"
+      summary: "Display group by id"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "invalid user"
+        "404":
+          description: "not found"
+    patch:
+      tags:
+      - "groups"
+      summary: "Update group details"
+      description: "Only can be done by group admin"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        required: true
+        type: "integer"
+      - name: "body"
+        in: "body"
+        description: "fields to be updated"
+        schema:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            description:
+              type: "string"
+            location:
+              type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid field(s)"
+        "401":
+          description: "Invalid user/Unauthorised to update"
+        "404":
+          description: "Profile/Group not found"
+    delete:
+      tags:
+      - "groups"
+      summary: "Delete group"
+      description: "Can only be performed by group admin"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        description: "group_id of group to be deleted"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "invalid user/Unauthorised to delete"
+        "404":
+          description: "group not found"
+  /groups/{group_id}/join:
+    post:
+      tags:
+      - "groups"
+      summary: "Adds user to group"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Adds new profile_id to group"
+        schema:
+          type: "object"
+          properties:
+            profile_id:
+              type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "401": 
+          description: "Already a member"
+        "404":
+          description: "User/Profile not found"
+  /groups/{group_id}/unjoin:
+    delete:
+      tags:
+      - "groups"
+      summary: "Unjoin group"
+      description: "Can be peformed by associated profile"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        description: "group_id of group to unjoined"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "profile_id to be removed"
+        schema:
+          type: "object"
+          properties:
+            profile_id:
+              type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "Not a member"
+        "404":
+          description: "Group/profile not found"
+  /groups/search/:
+    post:
+      tags:
+      - "groups"
+      summary: "Search group"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "search for group using keyword"
+        schema:
+          type: "object"
+          properties:
+            keyword:
+              type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "invalid user"
+        "404":
+          description: "not found"
+  /{group_id}/posts/:
+    get:
+      tags:
+      - "posts"
+      summary: "View post in group"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "Invalid user"
+        "404":
+          description: "user not found"
+    post:
+      tags:
+      - "posts"
+      summary: "Create new post"
+      parameters:
+        - name: "group_id"
+          in: "path"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Creates new post"
+          schema:
+            type: "object"
+            properties:
+              post:
+                type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "Invalid user"
+        "400":
+          description: "Invalid fields entered"
+  /{group_id}/posts/{post_id}/:
+    patch:
+      tags:
+      - "posts"
+      summary: "Update post"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        required: true
+        type: "integer"
+      - name: "post_id"
+        in: "path"
+        required: true
+        type: "integer"
+      - name: "body"
+        in: "body"
+        description: "post to be updated"
+        schema:
+          type: "object"
+          properties:
+            post:
+              type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "invalid user"
+        "404":
+          description: "not found"
+    delete:
+      tags:
+      - "posts"
+      summary: "Delete group"
+      description: "Can only be performed by group admin"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        description: "group_id of group to be deleted"
+        required: true
+        type: "integer"
+      - name: "post_id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "invalid user/Unauthorised to delete"
+        "404":
+          description: "group not found"
+  /{group_id}/posts/{post_id}/comments:
+    get:
+      tags:
+      - "posts"
+      summary: "Display comments"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        required: true
+        type: "integer"
+      - name: "post_id"
+        in: "path"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+        "401":
+          description: "invalid user"
+        "404":
+          description: "Profile not found"
+    post:
+      tags:
+      - "posts"
+      summary: "Comment on post"
+      parameters:
+      - name: "group_id"
+        in: "path"
+        required: true
+        type: "integer"
+      - name: "post_id"
+        in: "path"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "comment on post"
+        schema:
+          type: "object"
+          properties:
+            comment:
+              type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid input"
+        "404":
+          description: "Not found"
