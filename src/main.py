@@ -1,39 +1,32 @@
-from flask import Flask, jsonify, request
-import psycopg2
+from flask import Flask, jsonify
+from marshmallow.exceptions import ValidationError
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from dotenv import load_dotenv
-import os
 load_dotenv()
 
-app = Flask(__name__)
+
+db = SQLAlchemy()
+ma = Marshmallow()
 
 
-connection = psycopg2.connect(
-    database=os.getenv('database'),
-    user=os.getenv('user'),
-    password=os.getenv('password'),
-    host=os.getenv('host')
-)
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object("default_settings.app_config")
 
-cursor = connection.cursor()
-cursor.execute("create table if not exists profile (id serial PRIMARY KEY, name varchar);")     # noqa:E501
-connection.commit()
+    db.init_app(app)
+    ma.init_app(app)
 
+    from commands import db_commands
+    app.register_blueprint(db_commands)
 
-@app.route("/profile", methods=["GET"])
-def profile_page():
-    sql = "SELECT * FROM profile;"
-    cursor.execute(sql)
-    profile = cursor.fetchall()
-    return jsonify(profile)
+    from controllers import registerable_controllers
 
+    for controller in registerable_controllers:
+        app.register_blueprint(controller)
 
-@app.route("/profile", methods=["POST"])
-def create_profile():
-    sql = "INSERT INTO profile (name) VALUES (%s);"
-    cursor.execute(sql, (request.json["name"],))
-    connection.commit()
+    @app.errorhandler(ValidationError)
+    def handle_bad_request(error):
+        return(jsonify(error.messages), 400)
 
-    sql = "SELECT * FROM profile ORDER BY ID DESC LIMIT 1;"
-    cursor.execute(sql)
-    profile = cursor.fetchone()
-    return jsonify(profile)
+    return app
