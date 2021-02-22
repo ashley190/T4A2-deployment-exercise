@@ -2,7 +2,7 @@ from main import db
 from flask import Blueprint
 
 
-db_commands = Blueprint("custom-db", __name__)
+db_commands = Blueprint("db-custom", __name__)
 
 
 @db_commands.cli.command("create")
