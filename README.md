@@ -168,4 +168,4 @@ The steps involved in the Continuous Integration(CI) workflow upon pushing onto 
 Endpoints are documented in the formats below. These do not subscribe to the RESTful convention due to restrictions on methods such as PUT, PATCH and DELETE on web browsers:
 
 * [Raw format](docs/web_endpoints.yml)
-* [Swagger viewer](TBA)
+* [Swagger viewer](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/ashley190/T4A2/main/docs/web_endpoints.yml)
