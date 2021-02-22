@@ -152,6 +152,8 @@ This section is a continuation of the project tracking activity from PART A-R6. 
 
 **Continuous Integration(CI)**
 
+The YAML file detailing Continuous Integration/Continuous Deployment workflows can be found here: [CI/CD workflow](.github/workflows/ci-cd.yml).
+
 The steps involved in the Continuous Integration(CI) workflow upon pushing onto GitHub:-
 1. Checks out project from github into a virtual machine(VM) running on ubuntu-latest.
 2. Installs Python3.8 on the VM
@@ -161,3 +163,9 @@ The steps involved in the Continuous Integration(CI) workflow upon pushing onto 
 
 **Continuous Deployment(CD)**
 <!-- Pending deployment -->
+
+## Endpoint documentation
+Endpoints are documented in the formats below. These do not subscribe to the RESTful convention due to restrictions on methods such as PUT, PATCH and DELETE on web browsers:
+
+* [Raw format](docs/web_endpoints.yml)
+* [Swagger viewer](TBA)
