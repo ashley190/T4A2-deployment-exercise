@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="form-wrapper">
+
+        {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert">x</button>
+            {{ message }}
+        </div>
+        {% endfor %}
+
+        <h2>User Registration</h2>
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            {{ form.csrf_token }}
+            
+            <fieldset class="username">
+                {{ form.username.label }}
+                {{ form.username(placeholder="Your Username") }}
+                {% if form.username.errors %}
+                    <ul class="errors">
+                        {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </fieldset>
+
+            <fieldset class="password">
+                {{ form.password.label }}
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <ul class="errors">
+                        {% for error in form.password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </fieldset>
+
+            <fieldset class="confirm">
+                {{ form.confirm.label }}
+                {{ form.confirm }}
+                {% if form.confirm.errors %}
+                <ul class="errors">
+                    {% for error in form.confirm.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </fieldset>
+
+            <div class="submit-button">
+                {{ form.submit }}
+            </div>
+        </form>
+
+        <div class="login-signup">
+            <span>Already have an account?</span>
+            <a href="{{ url_for('auth.login') }}">Log In</a>
+        </div>
+    </div>
+
+{% endblock %}

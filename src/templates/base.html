@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MyLocale</title>
+    </head>
+    <body>
+        <h1> My Locale</h1>
+        {% if current_user.is_authenticated %}
+            {% include 'navbar.html' %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
