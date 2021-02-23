@@ -1,7 +1,6 @@
-from main import db
+from main import db, bcrypt
 from models.Profile import Profile      # noqa: F401
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Users(UserMixin, db.Model):
@@ -14,14 +13,11 @@ class Users(UserMixin, db.Model):
 
     def set_password(self, password):
         """Create hashed password."""
-        self.password = generate_password_hash(
-            password,
-            method="sha256"
-        )
+        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def check_password(self, password):
         """Check password hash."""
-        return check_password_hash(self.password, password)
+        return bcrypt.check_password_hash(self.password, password)
 
     def __repr__(self):
         return f"User: {self.username}"
