@@ -12,7 +12,10 @@ def get_from_env(var):
 
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_KEY = get_from_env('SECRET_KEY')
+
+    @property
+    def SECRET_KEY(self):
+        return get_from_env('SECRET_KEY')
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):
