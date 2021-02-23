@@ -12,7 +12,7 @@ tags:
 - name: "posts"
   description: "Post functions"
 paths:
-    /registration/:
+    /web/registration/:
       get:
         tags:
         - "users"
@@ -46,7 +46,7 @@ paths:
             description: "User registration successful"
           "302":
             description: "Redirect depending on outcome"
-    /login/:
+    /web/login/:
       get:
         tags:
         - "users"
@@ -76,7 +76,7 @@ paths:
             description: "successful operation"
           "302":
             description: "Redirect depending on outcome"
-    /logout/:
+    /web/logout/:
       get:
         tags:
         - "users"

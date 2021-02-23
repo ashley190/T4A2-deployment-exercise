@@ -5,7 +5,7 @@ from models.User import Users
 from main import db, login_manager
 
 
-auth = Blueprint("auth", __name__)
+auth = Blueprint("auth", __name__, url_prefix="/web")
 
 
 @login_manager.user_loader

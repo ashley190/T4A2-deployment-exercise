@@ -1,5 +1,5 @@
 from controllers.profile_controller import profile
-from controllers.auth import auth
+from controllers.auth_controller import auth
 
 registerable_controllers = [
     auth,
