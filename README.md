@@ -1,3 +1,49 @@
+# PART B DOCUMENTATION
+## Entity Relationship Diagram(ERD)
+![ERD](docs/ERD.png)
+
+The above Entity Relationship Diagram(ERD) outlines the database structure that is set up for the MyLocale web application.
+
+## Project Management (Trello)
+This section is a continuation of the project tracking activity from PART A-R6. Below are the screenshots of the Trello board throughout the application development and deployment process.
+
+![Feb 22](docs/trello_screenshots/210222.png)
+*February 22*: Tasks finalised, development commenced. App will be built by pages starting with the back-end and database followed by front-end templates to ensure all features are developed in a timely manner. Due to low confidence in developer's front-end skill, the app development is conducted in stages and aims to enhance the developer's knowledge of the front end as each stage is built and not leaving the least certain part of the development to a later date.
+
+![Feb 23](docs/trello_screenshots/210223.png)
+*February 23*: Completed and tested registration and login endpoints and templates. Initial database migration implemented.
+
+## Deployment/Installation steps
+### Continuous integration/Continuous Deployment(CI/CD)
+
+**Continuous Integration(CI)**
+
+The YAML file detailing Continuous Integration/Continuous Deployment workflows can be found here: [CI/CD workflow](.github/workflows/ci-cd.yml).
+
+The steps involved in the Continuous Integration(CI) workflow upon pushing onto GitHub:-
+1. Checks out project from github into a virtual machine(VM) running on ubuntu-latest.
+2. Installs Python3.8 on the VM
+3. Installs dependencies as specified on requirements.txt
+4. Run Automated tests
+5. Checks code according to PEP8 style guide using flake8
+
+**Continuous Deployment(CD)**
+<!-- Pending deployment -->
+
+## Endpoint documentation
+**Web endpoints**
+
+Endpoints are documented in the formats below. These do not subscribe to the RESTful convention due to restrictions on methods such as PUT, PATCH and DELETE on web browsers:
+
+* [Raw format](docs/web_endpoints.yml)
+* [Swagger viewer](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/ashley190/T4A2/main/docs/web_endpoints.yml)
+
+**API endpoints**
+API endpoints following restful conventions are documented in the formats below:-
+
+* [Raw format](docs/api_endpoints.yml)
+* [Swagger viewer](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/ashley190/T4A2/main/docs/api_endpoints.yml)
+
 # PART A-R1: Project description
 **Web application:** MyLocale
 
@@ -137,46 +183,3 @@ The developer is responsible for updating task status and marking task completio
 
 ![Feb 16](docs/trello_screenshots/210216.png)
 *February 16*: Completed AAD. Part A ready for submission.
-
-# PART B DOCUMENTATION
-## Entity Relationship Diagram(ERD)
-![ERD](docs/ERD.png)
-
-The above Entity Relationship Diagram(ERD) outlines the database structure that is set up for the MyLocale web application.
-
-## Project Management (Trello)
-This section is a continuation of the project tracking activity from PART A-R6. Below are the screenshots of the Trello board throughout the application development and deployment process.
-
-![Feb 22](docs/trello_screenshots/210222.png)
-*February 22*: Tasks finalised, development commenced. App will be built by pages starting with the back-end and database followed by front-end templates to ensure all features are developed in a timely manner. Due to low confidence in developer's front-end skill, the app development is conducted in stages and aims to enhance the developer's knowledge of the front end as each stage is built and not leaving the least certain part of the development to a later date.
-
-## Deployment/Installation steps
-### Continuous integration/Continuous Deployment(CI/CD)
-
-**Continuous Integration(CI)**
-
-The YAML file detailing Continuous Integration/Continuous Deployment workflows can be found here: [CI/CD workflow](.github/workflows/ci-cd.yml).
-
-The steps involved in the Continuous Integration(CI) workflow upon pushing onto GitHub:-
-1. Checks out project from github into a virtual machine(VM) running on ubuntu-latest.
-2. Installs Python3.8 on the VM
-3. Installs dependencies as specified on requirements.txt
-4. Run Automated tests
-5. Checks code according to PEP8 style guide using flake8
-
-**Continuous Deployment(CD)**
-<!-- Pending deployment -->
-
-## Endpoint documentation
-**Web endpoints**
-
-Endpoints are documented in the formats below. These do not subscribe to the RESTful convention due to restrictions on methods such as PUT, PATCH and DELETE on web browsers:
-
-* [Raw format](docs/web_endpoints.yml)
-* [Swagger viewer](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/ashley190/T4A2/main/docs/web_endpoints.yml)
-
-**API endpoints**
-API endpoints following restful conventions are documented in the formats below:-
-
-* [Raw format](docs/api_endpoints.yml)
-* [Swagger viewer](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/ashley190/T4A2/main/docs/api_endpoints.yml)
