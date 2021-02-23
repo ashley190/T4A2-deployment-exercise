@@ -22,7 +22,7 @@ def unauthorised():
     return redirect(url_for("auth.login"))
 
 
-@auth.route("/register", methods=["GET", "POST"])
+@auth.route("/registration", methods=["GET", "POST"])
 def register():
     """
     User registration page

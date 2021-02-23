@@ -30,6 +30,7 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:testdb"
+    WTF_CSRF_ENABLED = False
 
 
 environment = os.environ.get("FLASK_ENV")
