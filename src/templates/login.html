@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="form-wrapper">
-        {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">x</button>
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
 
     <h2>User Login</h2>
     <form method="POST" action="{{ url_for('auth.login') }}">

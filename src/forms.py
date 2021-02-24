@@ -50,3 +50,16 @@ class LoginForm(FlaskForm):
     )
 
     submit = SubmitField("Log In")
+
+
+class ProfileForm(FlaskForm):
+    """Create profile name"""
+    profile_name = StringField(
+        "Profile Name",
+        validators=[
+            Length(min=1, message="Profile name must be at least 1 character"),
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Confirm Profile Name")

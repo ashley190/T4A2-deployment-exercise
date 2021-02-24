@@ -9,6 +9,15 @@
             {% include 'navbar.html' %}
         {% endif %}
 
+        <div class="form-wrapper">
+            {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+
         {% block content %}
         {% endblock %}
     </body>
