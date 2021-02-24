@@ -35,14 +35,11 @@ def seed_db():
         db.session.add(user)
         users.append(user)
 
-    db.session.commit()
-    print("User table seeded")
-
-    for i in range(10):
+    for i in range(2, 6):
         profile = Profile()
         profile.name = faker.first_name()
-        profile.user_id = random.choice(users).id
+        profile.user_id = i
         db.session.add(profile)
 
     db.session.commit()
-    print("Profile table seeded")
+    print("User and profile tables seeded")
