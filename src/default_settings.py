@@ -12,6 +12,7 @@ def get_from_env(var):
 
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MAX_CONTENT_LENGTH = 1 * 1024 * 1024
 
     @property
     def SECRET_KEY(self):
@@ -20,6 +21,18 @@ class Config(object):
     @property
     def SQLALCHEMY_DATABASE_URI(self):
         return get_from_env('DB_URI')
+
+    @property
+    def AWS_ACCESS_KEY_ID(self):
+        return get_from_env("AWS_ACCESS_KEY_ID")
+    
+    @property
+    def AWS_SECRET_ACCESS_KEY(self):
+        return get_from_env("AWS_SECRET_ACCESS_KEY")
+    
+    @property
+    def AWS_S3_BUCKET(self):
+        return get_from_env("AWS_S3_BUCKET")
 
 
 class DevelopmentConfig(Config):
