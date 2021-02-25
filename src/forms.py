@@ -65,6 +65,7 @@ class ProfileForm(FlaskForm):
 
     submit = SubmitField("Confirm Profile Name")
 
+
 class ProfileImageUpload(FlaskForm):
     image = FileField("Profile Image", validators=[
         FileRequired(),

@@ -25,11 +25,11 @@ class Config(object):
     @property
     def AWS_ACCESS_KEY_ID(self):
         return get_from_env("AWS_ACCESS_KEY_ID")
-    
+
     @property
     def AWS_SECRET_ACCESS_KEY(self):
         return get_from_env("AWS_SECRET_ACCESS_KEY")
-    
+
     @property
     def AWS_S3_BUCKET(self):
         return get_from_env("AWS_S3_BUCKET")
