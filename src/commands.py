@@ -23,7 +23,6 @@ def seed_db():
     from models.User import Users
     from models.Profile import Profile
     from faker import Faker
-    import random
 
     faker = Faker()
     users = []
