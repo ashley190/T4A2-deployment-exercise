@@ -7,7 +7,7 @@ from flask import current_app, Blueprint, request, jsonify, render_template, red
 from flask_login import current_user, login_required
 from pathlib import Path
 import boto3
-import base64
+import os
 from forms import ProfileForm, ProfileImageUpload
 
 profile = Blueprint('profile', __name__, url_prefix="/web/profile")
@@ -20,7 +20,8 @@ def retrieve_profile():
 
 def retrieve_profile_picture(profile_image):
     s3 = boto3.client('s3')
-    url = s3.generate_presigned_url('get_object', Params= {"Bucket": "mylocale-profilepics", "Key": f"profile_images/{profile_image.filename}"}, ExpiresIn=5)
+    bucket = os.environ.get("AWS_S3_BUCKET")
+    url = s3.generate_presigned_url('get_object', Params= {"Bucket": bucket, "Key": f"profile_images/{profile_image.filename}"}, ExpiresIn=5)
     return url
     # bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
     # filename = profile_image.filename
