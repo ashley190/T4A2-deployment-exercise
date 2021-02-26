@@ -4,6 +4,26 @@ from flask import Blueprint
 
 db_commands = Blueprint("db-custom", __name__)
 
+def retrieve_suburb():
+    import requests
+    import json
+    from faker import Faker
+    faker = Faker(["en_AU"])
+
+    postcode = faker.postcode()
+    url = f"http://v0.postcodeapi.com.au/suburbs/{postcode}.json"
+    response = requests.get(url)
+    data = json.loads(response.text)
+    return data
+
+def seed_location(locations):
+    while len(locations) < 3:
+        location = retrieve_suburb()
+        while not location:
+            location = retrieve_suburb()
+            if location:
+                locations.append(location[0])
+    return locations
 
 def retrieve_suburb():
     import requests
