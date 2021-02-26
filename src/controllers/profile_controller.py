@@ -34,6 +34,7 @@ def retrieve_profile_picture(profile_image):
 @login_required
 def profile_page():
     user_id, profile = retrieve_profile()
+    locations = Location.query.filter_by(profile_id=profile.id).all()
     image = None
     if profile:
         profile_image = ProfileImage.query.filter_by(
@@ -54,7 +55,7 @@ def profile_page():
 
     return render_template(
         "profile.html", profile=profile,
-        form=form, image=image)
+        form=form, image=image, locations=locations)
 
 
 @profile.route("/uploadimage", methods=["GET", "POST"])
