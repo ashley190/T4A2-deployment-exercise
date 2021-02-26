@@ -11,6 +11,9 @@
 
     {{ form.submit }}
 </form>
+<form method="POST" action="{{ url_for('profile.remove_image') }}" >
+    {{ delete.csrf_token }}
+    {{ delete.submit }}
 
-
+</form>
 {% endblock %}

@@ -6,7 +6,7 @@ from flask import (current_app, Blueprint, render_template,
 from flask_login import current_user, login_required
 import boto3
 import os
-from forms import ProfileForm, ProfileImageUpload
+from forms import ProfileForm, ProfileImageUpload, DeleteButton
 
 profile = Blueprint('profile', __name__, url_prefix="/web/profile")
 
@@ -32,7 +32,8 @@ def profile_page():
     user_id, profile = retrieve_profile()
     image = None
     if profile:
-        profile_image = ProfileImage.query.filter_by(profile_id=profile.id).first()
+        profile_image = ProfileImage.query.filter_by(
+            profile_id=profile.id).first()
         if profile_image:
             image = retrieve_profile_picture(profile_image)
 
@@ -73,5 +74,24 @@ def profile_image():
             db.session.commit()
             flash("Image upload successful")
         return redirect(url_for("profile.profile_page"))
+    delete = DeleteButton()
+    return render_template("image_upload.html", form=form, delete=delete)
 
-    return render_template("image_upload.html", form=form)
+
+@profile.route("/deleteimage", methods=["POST"])
+@login_required
+def remove_image():
+    user_id, profile = retrieve_profile()
+
+    delete = DeleteButton()
+    if delete.validate_on_submit():
+        if profile.profile_image:
+            bucket = boto3.resource("s3").Bucket(
+                current_app.config["AWS_S3_BUCKET"])
+            filename = profile.profile_image.filename
+            bucket.Object(f"profile_images/{filename}").delete()
+            db.session.delete(profile.profile_image)
+            db.session.commit()
+            flash("Image removed")
+        flash("Image not found")
+    return redirect(url_for("profile.profile_page"))
