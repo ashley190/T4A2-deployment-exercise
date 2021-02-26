@@ -24,25 +24,19 @@ def retrieve_profile_picture(profile_image):
         "Bucket": bucket,
         "Key": f"profile_images/{profile_image.filename}"}, ExpiresIn=5)
     return url
-    # bucket = boto3.resource("s3").Bucket(current_app.config["AWS_S3_BUCKET"])
-    # filename = profile_image.filename
-    # file_obj = bucket.Object(f"profile_images/{filename}").get()
-
-    # return Response(
-    #     file_obj["Body"].read(),
-    #     mimetype="image/*",
-    #     headers={"Content-Disposition": f"attachment; filename=image"}
-    # )
 
 
 @profile.route("/", methods=["GET", "POST"])
 @login_required
 def profile_page():
     user_id, profile = retrieve_profile()
-    profile_image = ProfileImage.query.filter_by(profile_id=profile.id).first()
+    image = None
+    if profile:
+        profile_image = ProfileImage.query.filter_by(profile_id=profile.id).first()
+        if profile_image:
+            image = retrieve_profile_picture(profile_image)
 
     form = ProfileForm()
-    uploadform = ProfileImageUpload()
     if form.validate_on_submit():
         new_profile = Profile(
             name=form.profile_name.data,
@@ -53,11 +47,9 @@ def profile_page():
         flash("Profile name confirmed!")
         return redirect(url_for("profile.profile_page"))
 
-    image = retrieve_profile_picture(profile_image)
-
     return render_template(
         "profile.html", profile=profile,
-        form=form, uploadform=uploadform, image=image)
+        form=form, image=image)
 
 
 @profile.route("/uploadimage", methods=["GET", "POST"])
@@ -79,14 +71,7 @@ def profile_image():
             new_image.filename = filename
             profile.profile_image = new_image
             db.session.commit()
+            flash("Image upload successful")
+        return redirect(url_for("profile.profile_page"))
 
-        return ("Upload successful")
-
-    return "Upload not successful"
-
-
-@profile.route("/profileimage", methods=["GET"])
-def profile_image_show():
-    profile_image = ProfileImage.query.get(3)
-
-    return retrieve_profile_picture(profile_image)
+    return render_template("image_upload.html", form=form)

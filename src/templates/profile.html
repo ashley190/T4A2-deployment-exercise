@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if profile == None %}
+{% if not profile %}
 <form method="POST" action="{{ url_for('profile.profile_page') }}" >
     {{ form.csrf_token }}
 
@@ -14,17 +14,14 @@
 </form>
 {% endif %}
 
-<form method="POST" enctype="multipart/form-data" action="{{ url_for('profile.profile_image') }}">
-    {{ uploadform.csrf_token }}
-
-    <fieldset class="form-field">
-        {{ uploadform.image() }}
-    </fieldset>
-
-    {{ uploadform.submit }}
-</form>
 <h1>{{ profile.name }}</h1>
-<img src= {{ image }} />
+
+{% if not image %}
+    <a href="{{ url_for('profile.profile_image') }}"><img src="{{ url_for('static', filename='default.png') }}" /></a>
+{% elif image %}
+    <a href="{{ url_for('profile.profile_image') }}"><img src="{{ image }}" /></a>
+{% endif %}
+
 <h2>Locations</h2>
 
 {% endblock %}
