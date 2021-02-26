@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Upload your profile picture</h1>
+<form method="POST" enctype="multipart/form-data" action="{{ url_for('profile.profile_image') }}">
+    {{ form.csrf_token }}
+
+    <fieldset class="form-field">
+        {{ form.image() }}
+    </fieldset>
+
+    {{ form.submit }}
+</form>
+
+
+{% endblock %}
