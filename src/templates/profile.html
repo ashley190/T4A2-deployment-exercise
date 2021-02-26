@@ -1,18 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if not profile %}
-<form method="POST" action="{{ url_for('profile.profile_page') }}" >
-    {{ form.csrf_token }}
-
-    <fieldset class="form-field">
-        {{ form.profile_name.label }}
-        {{ form.profile_name() }}
-    </fieldset>
-
-    {{ form.submit }}
-</form>
-{% endif %}
 
 <h1>{{ profile.name }}</h1>
 
@@ -23,6 +11,7 @@
 {% endif %}
 
 <h2>Neighbourhoods</h2>
+{% if locations %}
 <table>
     <thead>
         <th>Postcode</th>
@@ -37,5 +26,6 @@
     </tr>
     {% endfor %}
 </table>
+{% endif %}
 <a href="{{ url_for('profile.profile_locations') }}">Add Location</a>
 {% endblock %}

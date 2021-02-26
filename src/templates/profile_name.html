@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('profile.profile_name') }}" >
+    {{ form.csrf_token }}
+
+    <fieldset class="form-field">
+        {{ form.profile_name.label }}
+        {{ form.profile_name() }}
+    </fieldset>
+
+    {{ form.submit }}
+</form>
+{% endblock %}
