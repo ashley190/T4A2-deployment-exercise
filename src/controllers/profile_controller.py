@@ -47,7 +47,6 @@ def profile_page():
             image = retrieve_profile_picture(profile_image)
         locations = Location.query.filter_by(profile_id=profile.id).all()
 
-
     return render_template(
         "profile.html", profile=profile, image=image, locations=locations)
 
@@ -67,6 +66,7 @@ def profile_name():
         flash("Profile name confirmed!")
         return redirect(url_for("profile.profile_page"))
     return render_template("profile_name.html", form=form)
+
 
 @profile.route("/uploadimage", methods=["GET", "POST"])
 @login_required

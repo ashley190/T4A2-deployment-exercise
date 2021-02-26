@@ -4,6 +4,7 @@ from flask import Blueprint
 
 db_commands = Blueprint("db-custom", __name__)
 
+
 def retrieve_suburb():
     import requests
     import json
@@ -16,6 +17,7 @@ def retrieve_suburb():
     data = json.loads(response.text)
     return data
 
+
 def seed_location(locations):
     while len(locations) < 3:
         location = retrieve_suburb()
@@ -24,6 +26,7 @@ def seed_location(locations):
             if location:
                 locations.append(location[0])
     return locations
+
 
 @db_commands.cli.command("create")
 def create_db():
@@ -45,7 +48,6 @@ def seed_db():
     from models.ProfileImage import ProfileImage
     from models.Locations import Location
     from faker import Faker
-    import random
 
     faker = Faker()
     users = []
@@ -64,12 +66,12 @@ def seed_db():
         db.session.add(profile)
 
         image = ProfileImage()
-        image.filename=f"{i}-profile_image"
-        profile.profile_image = image            
-    
+        image.filename = f"{i}-profile_image"
+        profile.profile_image = image
+
         locations = []
         seed_location(locations)
-        
+
         for location in locations:
             new_location = Location()
             new_location.postcode = location["postcode"]
@@ -81,4 +83,3 @@ def seed_db():
     db.session.commit()
 
     print("Test database seeded")
-
