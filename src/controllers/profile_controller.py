@@ -67,6 +67,7 @@ def profile_name():
         return redirect(url_for("profile.profile_page"))
     return render_template("profile_name.html", form=form)
 
+
 @profile.route("/uploadimage", methods=["GET", "POST"])
 @login_required
 def profile_image():
@@ -96,36 +97,6 @@ def profile_image():
 @login_required
 def remove_image():
     user_id, profile = retrieve_profile()
-
-    delete = DeleteButton()
-    if delete.validate_on_submit():
-        if profile.profile_image:
-            bucket = boto3.resource("s3").Bucket(
-                current_app.config["AWS_S3_BUCKET"])
-            filename = profile.profile_image.filename
-            bucket.Object(f"profile_images/{filename}").delete()
-            db.session.delete(profile.profile_image)
-            db.session.commit()
-            flash("Image removed")
-        flash("Image not found")
-    return redirect(url_for("profile.profile_page"))
-
-
-@profile.route("/locationsearch", methods=["GET", "POST"])
-@login_required
-def profile_locations():
-    form = SearchLocation()
-    form2 = AddButton()
-
-    if form.validate_on_submit():
-        url = f"http://v0.postcodeapi.com.au/suburbs/{form.postcode.data}.json"
-        response = requests.get(url)
-        data = json.loads(response.text)
-        return render_template(
-            "locations.html", form=form, data=data, form2=form2)
-    return render_template("locations.html", form=form)
-
-
 
     delete = DeleteButton()
     if delete.validate_on_submit():
