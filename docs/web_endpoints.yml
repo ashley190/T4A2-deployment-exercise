@@ -84,16 +84,11 @@ paths:
         responses:
           "200":
             description: "successful operation"
-    /profile/{profile_id}:
+    /web/profile/:
       get:
         tags:
         - "profiles"
         summary: "Show profile page"
-        parameters:
-          - name: "profile_id"
-            in: "path"
-            required: true
-            type: "integer"
         responses:
           "200":
             description: "successful operation"
@@ -102,14 +97,10 @@ paths:
       post:
         tags:
         - "profiles"
-        summary: "Create/update profile page"
+        summary: "Create/update profile name"
         consumes:
           - application/x-www-form-urlencoded
         parameters:
-          - name: "profile_id"
-            in: "path"
-            required: true
-            type: "integer"
           - in: formData
             name: name
             type: string
@@ -119,7 +110,7 @@ paths:
             description: "successful operation"
           "302":
             description: "Redirect depending on outcome"
-    /profile/{profile_id}/uploadimage/:
+    /web/profile/uploadimage/:
       post:
         tags:
           - "profiles"
@@ -127,15 +118,6 @@ paths:
         consumes:
         - "multipart/form-data"
         parameters:
-          - name: "profile_id"
-            in: "path"
-            required: true
-            type: "integer"
-          - name: "additionalMetadata"
-            in: "formData"
-            description: "Additional data to pass to server"
-            required: false
-            type: "string"
           - name: "file"
             in: "formData"
             description: "file to upload"
@@ -146,7 +128,45 @@ paths:
             description: "successful operation"
           "302":
             description: "Redirect depending on outcome"
-    /profile/{profile_id}/addlocation/:
+    /web/profile/deleteimage/:
+      post:
+        tags:
+          - "profiles"
+        summary: "delete profile picture"
+        responses:
+          "200":
+            description: "successful operation"
+          "302":
+            description: "Redirect to profile page"
+    /web/profile/locationsearch/:
+      get:
+        tags:
+        - "profiles"
+        summary: "Show location search page"
+        responses:
+          "200":
+            description: "successful operation"
+          "404":
+            description: "page not found"
+      post:
+        tags:
+        - "profiles"
+        summary: "Search location for according to postcode"
+        consumes:
+          - application/x-www-form-urlencoded
+        parameters:
+          - in: formData
+            name: postcode
+            type: integer
+            description: Postcode
+        responses:
+          "200":
+            description: "successful operation"
+          "302":
+            description: "Reload page with location data"
+          "404":
+            description: "Location not found"
+    /web/profile/addlocation/:
       post:
         tags:
         - "profiles"
@@ -154,10 +174,10 @@ paths:
         consumes:
           - application/x-www-form-urlencoded
         parameters:
-          - name: "profile_id"
-            in: "path"
-            required: true
-            type: "integer"
+          - in: formData
+            name: postcode
+            type: integer
+            description: Postcode
           - in: formData
             name: suburb
             type: string
@@ -170,7 +190,7 @@ paths:
           "200":
             description: "successful operation"
           "302":
-            description: "Redirect depending on outcome"
+            description: "Redirect profile page"
     /groups/:
       get:
         tags:
