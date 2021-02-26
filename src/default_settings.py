@@ -48,6 +48,9 @@ class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:testdb"
     WTF_CSRF_ENABLED = False
     SECRET_KEY = "testing"
+    AWS_ACCESS_KEY_ID = 1
+    AWS_SECRET_ACCESS_KEY = 1
+    AWS_S3_BUCKET = 1
 
 
 environment = os.environ.get("FLASK_ENV")
