@@ -73,3 +73,7 @@ class ProfileImageUpload(FlaskForm):
     ])
 
     submit = SubmitField("Upload Profile Image")
+
+
+class DeleteButton(FlaskForm):
+    submit = SubmitField("Delete")
