@@ -13,6 +13,9 @@ This section is a continuation of the project tracking activity from PART A-R6. 
 ![Feb 23](docs/trello_screenshots/210223.png)
 *February 23*: Completed and tested registration and login endpoints and templates. Initial database migration implemented.
 
+![Feb 26](docs/trello_screenshots/210226.png)
+*February 26*: Completed backend, db and frontend for profile page. Implemented some changes to the original plan for the profile page for smoother to complement logic. Testing delayed.
+
 ## Deployment/Installation steps
 ### Continuous integration/Continuous Deployment(CI/CD)
 
