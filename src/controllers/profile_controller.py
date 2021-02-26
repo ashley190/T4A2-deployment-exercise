@@ -34,14 +34,28 @@ def retrieve_profile_picture(profile_image):
 @login_required
 def profile_page():
     user_id, profile = retrieve_profile()
-    locations = Location.query.filter_by(profile_id=profile.id).all()
     image = None
+    locations = None
+
+    if not profile:
+        return redirect(url_for("profile.profile_name"))
+
     if profile:
         profile_image = ProfileImage.query.filter_by(
             profile_id=profile.id).first()
         if profile_image:
             image = retrieve_profile_picture(profile_image)
+        locations = Location.query.filter_by(profile_id=profile.id).all()
 
+
+    return render_template(
+        "profile.html", profile=profile, image=image, locations=locations)
+
+
+@profile.route("/profilename", methods=["GET", "POST"])
+@login_required
+def profile_name():
+    user_id = current_user.get_id()
     form = ProfileForm()
     if form.validate_on_submit():
         new_profile = Profile(
@@ -52,11 +66,7 @@ def profile_page():
         db.session.commit()
         flash("Profile name confirmed!")
         return redirect(url_for("profile.profile_page"))
-
-    return render_template(
-        "profile.html", profile=profile,
-        form=form, image=image, locations=locations)
-
+    return render_template("profile_name.html", form=form)
 
 @profile.route("/uploadimage", methods=["GET", "POST"])
 @login_required
