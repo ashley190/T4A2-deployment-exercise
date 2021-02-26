@@ -1,5 +1,6 @@
 from main import db
 from models.ProfileImage import ProfileImage
+from models.Locations import Location
 
 
 class Profile(db.Model):
@@ -10,6 +11,7 @@ class Profile(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), unique=True)
     profile_image = db.relationship(
         ProfileImage, backref="profile", uselist=False)
+    locations = db.relationship(Location, backref="profile", lazy="dynamic")
 
     def __repr__(self):
         return f"Profile: {self.name}"

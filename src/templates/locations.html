@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Add Profile Location</h1>
+<form method="POST" action="{{ url_for('profile.profile_locations') }}">
+    {{ form.csrf_token }}
+
+    <fieldset class="form-field">
+        {{ form.postcode.label }}
+        {{ form.postcode() }}
+    </fieldset>
+
+    {{ form.submit }}
+</form>
+
+{% if data | length == 0 %}
+    <p>No locations found. Try another postcode</p>
+{% elif data| length > 0 %}
+    <table>
+        <thead>
+            <th>Postcode</th>
+            <th>Suburb</th>
+            <th>State</th>
+            <th></th>
+        </thead>
+        {% for location in data %}
+        <tr>
+            <td>{{ location["postcode"] }}</td>
+            <td>{{ location["name"] }}</td>
+            <td>{{ location["state"]["abbreviation"] }}</td>
+            <td>
+                <button>
+                    <form method="POST" action="{{ url_for('profile.add_location', postcode=location['postcode'], suburb=location['name'], state=location['state']['abbreviation']) }}">
+                        {{ form2.csrf_token }}
+                        {{ form2.submit }}
+                    </form>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+{% endblock %}

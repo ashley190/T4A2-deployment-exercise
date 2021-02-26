@@ -1,12 +1,16 @@
 from models.Profile import Profile
 from models.ProfileImage import ProfileImage
+from models.Locations import Location
 from main import db
 from flask import (current_app, Blueprint, render_template,
-                   redirect, url_for, flash)
+                   redirect, url_for, flash, request)
 from flask_login import current_user, login_required
 import boto3
 import os
-from forms import ProfileForm, ProfileImageUpload, DeleteButton
+import requests
+import json
+from forms import (ProfileForm, ProfileImageUpload,
+                   DeleteButton, SearchLocation, AddButton)
 
 profile = Blueprint('profile', __name__, url_prefix="/web/profile")
 
@@ -94,4 +98,45 @@ def remove_image():
             db.session.commit()
             flash("Image removed")
         flash("Image not found")
+    return redirect(url_for("profile.profile_page"))
+
+
+@profile.route("/locationsearch", methods=["GET", "POST"])
+@login_required
+def profile_locations():
+    form = SearchLocation()
+    form2 = AddButton()
+
+    if form.validate_on_submit():
+        url = f"http://v0.postcodeapi.com.au/suburbs/{form.postcode.data}.json"
+        response = requests.get(url)
+        data = json.loads(response.text)
+        return render_template(
+            "locations.html", form=form, data=data, form2=form2)
+    return render_template("locations.html", form=form)
+
+
+@profile.route("/addlocation", methods=["POST"])
+@login_required
+def add_location():
+    user_id, profile = retrieve_profile()
+    form = AddButton()
+
+    if form.submit.data:
+        postcode = request.args["postcode"]
+        suburb = request.args["suburb"]
+        state = request.args["state"]
+
+        profile_location = Location.query.filter_by(
+            suburb=suburb, profile_id=profile.id).first()
+        if not profile_location:
+            new_location = Location()
+            new_location.postcode = postcode
+            new_location.suburb = suburb
+            new_location.state = state
+            new_location.profile_id = profile.id
+            profile.locations.append(new_location)
+            db.session.commit()
+        elif profile_location:
+            flash("Suburb already associated with your profile")
     return redirect(url_for("profile.profile_page"))

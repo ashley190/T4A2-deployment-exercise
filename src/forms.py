@@ -1,10 +1,11 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
 from wtforms.validators import (
     DataRequired,
     EqualTo,
-    Length
+    Length,
+    NumberRange
 )
 
 
@@ -77,3 +78,12 @@ class ProfileImageUpload(FlaskForm):
 
 class DeleteButton(FlaskForm):
     submit = SubmitField("Delete")
+
+
+class SearchLocation(FlaskForm):
+    postcode = IntegerField("Postcode", validators=[NumberRange(200, 9999)])
+    submit = SubmitField("Search")
+
+
+class AddButton(FlaskForm):
+    submit = SubmitField("Add")
