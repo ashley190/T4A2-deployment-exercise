@@ -12,4 +12,4 @@ class Location(db.Model):
         db.Integer, db.ForeignKey("profile.id"), nullable=False)
 
     def __repr__(self):
-        return f"Location: {self.title}"
+        return f"Location: {self.id}"

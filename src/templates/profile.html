@@ -22,6 +22,20 @@
     <a href="{{ url_for('profile.profile_image') }}"><img src="{{ image }}" /></a>
 {% endif %}
 
-<h2>Locations</h2>
+<h2>Neighbourhoods</h2>
+<table>
+    <thead>
+        <th>Postcode</th>
+        <th>Suburb</th>
+        <th>State</th>
+    </thead>
+    {% for location in locations %} 
+    <tr>
+        <td>{{ location.postcode }}</td>
+        <td>{{ location.suburb }}</td>
+        <td>{{ location.state }}</td>
+    </tr>
+    {% endfor %}
+</table>
 <a href="{{ url_for('profile.profile_locations') }}">Add Location</a>
 {% endblock %}
