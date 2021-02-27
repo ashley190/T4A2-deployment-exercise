@@ -133,7 +133,7 @@ def add_location():
     user_id, profile = retrieve_profile()
     form = AddButton()
 
-    if form.submit.data:
+    if form.validate_on_submit():
         postcode = request.args["postcode"]
         suburb = request.args["suburb"]
         state = request.args["state"]
@@ -148,6 +148,7 @@ def add_location():
             new_location.profile_id = profile.id
             profile.locations.append(new_location)
             db.session.commit()
+            flash("Suburb added!")
         elif profile_location:
             flash("Suburb already associated with your profile")
     return redirect(url_for("profile.profile_page"))
