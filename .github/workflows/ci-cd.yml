@@ -7,7 +7,6 @@ on:
 jobs:
   test_suite:
     runs-on: ubuntu-latest
-    environment: flask-testing
     steps:
     - name: Checkout Branch
       uses: actions/checkout@v2
