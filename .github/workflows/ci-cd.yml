@@ -7,6 +7,7 @@ on:
 jobs:
   test_suite:
     runs-on: ubuntu-latest
+    environment: flask-testing
     steps:
     - name: Checkout Branch
       uses: actions/checkout@v2
@@ -19,7 +20,6 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run Tests
-      environment: flask-testing
       run: |
         cd src
         python -m unittest discover -s tests/ -v
