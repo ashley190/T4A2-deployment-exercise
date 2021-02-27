@@ -7,9 +7,7 @@ on:
 jobs:
   test_suite:
     runs-on: ubuntu-latest
-    environment:
-      name: flask-testing
-      url: https://github.com
+    environment: flask-testing
     steps:
     - name: Checkout Branch
       uses: actions/checkout@v2
@@ -22,9 +20,10 @@ jobs:
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run Tests
+      env:
+        FLASK_ENV: ${{ secrets.FLASK_ENV }}
       run: |
-        cd src
-        python -m unittest discover -s tests/ -v
+        env
     - name: Style Check
       run: |
         cd src
