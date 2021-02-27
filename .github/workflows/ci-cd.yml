@@ -7,7 +7,9 @@ on:
 jobs:
   test_suite:
     runs-on: ubuntu-latest
-    environment: flask-testing
+    environment:
+      name: flask-testing
+      url: https://github.com/ashley190/T4A2/settings/environments/
     steps:
     - name: Checkout Branch
       uses: actions/checkout@v2
