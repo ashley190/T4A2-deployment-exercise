@@ -9,7 +9,8 @@ class Location(db.Model):
     suburb = db.Column(db.String(), nullable=False)
     state = db.Column(db.String(), nullable=False)
     profile_id = db.Column(
-        db.Integer, db.ForeignKey("profile.id"), nullable=False)
+        db.Integer, db.ForeignKey("profile.id"), nullable=True)
+    group_id = db.Column(db.Integer, db.ForeignKey("groups.id"), nullable=True)
 
     def __repr__(self):
         return f"Location: {self.id}"

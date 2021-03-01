@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Create New Group</h2>
+<form method="POST" action="{{ url_for('groups.create_group') }}">
+    {{ form.csrf_token }}
+
+    <fieldset class="form-field">
+        {{ form.group_name.label }}
+        {{ form.group_name() }}
+    </fieldset>
+    <fieldset class="form-field">
+        {{ form.group_description.label }}
+        {{ form.group_description() }}
+    </fieldset>
+    <fieldset class="form-field">
+        {{ form.group_location.label }}
+        {{ form.group_location() }}
+    </fieldset>
+    
+    {{ form.submit }}
+</form>
+
+{% endblock %}

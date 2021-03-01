@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>My groups</h2>
+
+<h2>Group recommendations</h2>
+
+<a href="{{ url_for('groups.create_group') }}">Create new group</a>
+<a href="#">Search group</a>
+{% endblock %}
