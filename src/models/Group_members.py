@@ -1,6 +1,4 @@
 from main import db
-# from models.Groups import Groups
-# from models.Profile import Profile
 
 
 class GroupMembers(db.Model):

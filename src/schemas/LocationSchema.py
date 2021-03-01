@@ -6,6 +6,10 @@ class LocationSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Location
 
+    postcode = ma.Integer()
+    suburb = ma.String()
+    state = ma.String()
+
 
 location_schema = LocationSchema()
 locations_schema = LocationSchema(many=True)

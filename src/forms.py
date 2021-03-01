@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import (StringField, PasswordField, SubmitField,
-                     IntegerField, TextAreaField)
+                     IntegerField, TextAreaField, RadioField)
 from wtforms.validators import (
     DataRequired,
     EqualTo,
@@ -83,7 +83,6 @@ class DeleteButton(FlaskForm):
 
 class SearchLocation(FlaskForm):
     postcode = IntegerField("Postcode", validators=[NumberRange(200, 9999)])
-    suburb = StringField("Suburb")
     submit = SubmitField("Search")
 
 
@@ -103,14 +102,7 @@ class CreateGroup(FlaskForm):
 
     group_description = TextAreaField(
         "Description",
-        default="Group description"
     )
 
-    group_location = StringField(
-        "Group Location",
-        validators=[
-            DataRequired()
-        ]
-    )
-
+    group_location = RadioField("Group location", choices=[])
     submit = SubmitField("Create Group")

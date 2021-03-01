@@ -3,6 +3,11 @@
 {% block content %}
 
 <h2>My groups</h2>
+{% for group in groups %}
+<ul>
+    <li>{{ group.location }}</li>
+</ul>
+{% endfor %}
 
 <h2>Group recommendations</h2>
 

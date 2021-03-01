@@ -3,23 +3,35 @@
 {% block content %}
 
 <h2>Create New Group</h2>
-<form method="POST" action="{{ url_for('groups.create_group') }}">
-    {{ form.csrf_token }}
+{% if not data %}
+    <form method="POST" action="{{ url_for('groups.create_group') }}">
+        {{ form.csrf_token }}
 
-    <fieldset class="form-field">
-        {{ form.group_name.label }}
-        {{ form.group_name() }}
-    </fieldset>
-    <fieldset class="form-field">
-        {{ form.group_description.label }}
-        {{ form.group_description() }}
-    </fieldset>
-    <fieldset class="form-field">
-        {{ form.group_location.label }}
-        {{ form.group_location() }}
-    </fieldset>
-    
-    {{ form.submit }}
-</form>
+        <fieldset class="form-field">
+            {{ form.postcode.label }}
+            {{ form.postcode()}}
+            {{ form.submit }}
+        </fieldset>
+    </form>
+{% elif data %}
+    <form method="POST" action="{{ url_for('groups.create_group', locations=form2.group_location, data=data) }}">
+        {{ form2.csrf_token }}
 
+        <fieldset class="form-field">
+            {{ form2.group_name.label }}
+            {{ form2.group_name() }}
+        </fieldset>
+        <fieldset class="form-field">
+            {{ form2.group_description.label }}
+            {{ form2.group_description() }}
+        </fieldset>
+        <fieldset class="form-field">
+            {% for item in form2.group_location %}
+                {{ item() }}
+                {{ item.label }}
+            {% endfor %}
+        </fieldset>
+        {{ form2.submit }}
+    </form>
+{% endif %}
 {% endblock %}
