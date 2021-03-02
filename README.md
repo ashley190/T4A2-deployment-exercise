@@ -16,6 +16,9 @@ This section is a continuation of the project tracking activity from PART A-R6. 
 ![Feb 26](docs/trello_screenshots/210226.png)
 *February 26*: Completed backend, db and frontend for profile page. Implemented some changes to the original plan for the profile page for smoother to complement logic. Testing delayed.
 
+![Mar 2](docs/trello_screenshots/210302.png)
+*Mar 2*: Profile page testing completed. Group page backend development under way. Completed 3 group page endpoints.
+
 ## Deployment/Installation steps
 ### Continuous integration/Continuous Deployment(CI/CD)
 
