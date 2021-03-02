@@ -7,6 +7,7 @@ class GroupSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         mode = Groups
 
+    id = ma.Integer()
     name = ma.String(required=True, validate=Length(min=1))
     description = ma.String()
 
@@ -17,7 +18,7 @@ groups_schema = GroupSchema(many=True)
 
 class GroupLocationSchema(ma.Schema):
     id = ma.Integer()
-    admin = ma.Boolean()
+    # admin = ma.Boolean()
     name = ma.String()
     postcode = ma.Integer()
     suburb = ma.String()

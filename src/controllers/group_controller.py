@@ -2,10 +2,9 @@ from models.Profile import Profile
 from models.Groups import Groups
 from models.Locations import Location
 from models.Group_members import GroupMembers
-from schemas.GroupSchema import groups_location_schema
 from controllers.profile_controller import retrieve_profile
 from main import db
-from flask import Blueprint, render_template, flash, redirect, url_for, request, jsonify
+from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required
 from forms import CreateGroup, SearchLocation
 import requests
@@ -18,21 +17,40 @@ groups = Blueprint("groups", __name__, url_prefix="/web/groups")
 @login_required
 def groups_page():
     user_id, profile = retrieve_profile()
+    # My Groups logic
+    groups = Groups.query.with_entities(
+        Profile.id, GroupMembers.admin, Groups.id,
+        Groups.name, Location.postcode, Location.suburb,
+        Location.state).select_from(Profile).filter_by(
+            id=profile.id).outerjoin(GroupMembers).join(Groups).join(Location)
 
-    # groups = Profile.query.with_entities(
-    #     Profile.id, GroupMembers.admin, Groups.name, Location.postcode, Location.suburb, Location.state).select_from(Profile).outerjoin(GroupMembers).join(Groups).join(Location).filter_by(id=profile.id)
-    # # return f"{groups}"
-    groups = Profile.query.with_entities(Profile.id, GroupMembers.admin, Groups.id, Groups.name, Location.postcode, Location.suburb, Location.state).select_from(Profile).filter_by(id=profile.id).outerjoin(GroupMembers).join(Groups).join(Location)
-    # return f"{groups}"
-    return jsonify(groups_location_schema.dump(groups))
+    # Group recommendations logic
+    member = []
+    non_member = []
+    locations = []
+    recommendations = []
+    # Get user's groups
+    for group in groups:
+        member.append(Groups.query.get(group.id))
+    # Get groups that user is not a member of
+    for group in Groups.query.all():
+        if group not in member:
+            non_member.append(group)
+    # Get postcodes associated to user's profile
+    for location in Location.query.filter_by(profile_id=profile.id):
+        locations.append(location.postcode)
 
-# select p.id as profile_id, gm.admin as admin, g.name as group_name, l.postcode as postcode, l.suburb as suburb, l.state as state
-# from profile p
-# left outer join group_members gm on p.id=gm.profile_id
-# inner join groups g on gm.group_id=g.id
-# inner join locations l on g.id=l.group_id
-# where p.id = 2;    
-    # return render_template("groups.html", groups=groups)
+    # Find non-member group postcodes that matches postcodes associated
+    # with user's profile
+    for group in non_member:
+        query = Groups.query.with_entities(
+            Groups.name, Location.postcode, Location.suburb,
+            Location.state).filter_by(id=group.id).filter(
+                Location.postcode.in_(locations)).join(
+                    Location).first()
+        recommendations.append(query)
+    return render_template(
+        "groups.html", groups=groups, recommendations=recommendations)
 
 
 @groups.route("/create", methods=["GET", "POST"])
@@ -79,4 +97,3 @@ def create_group():
         return redirect(url_for("groups.groups_page"))
     return render_template(
         "create_group.html", form=form, form2=form2, data=data)
-

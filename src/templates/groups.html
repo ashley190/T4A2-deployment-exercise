@@ -11,14 +11,44 @@
     </thead>
     {% for group in groups %}
     <tr>
-        <td>{{ group.groups_name }}</td>
-        <!-- <td>{{ group.locations_postcode }}</td>
-        <td>{{ group.locations_suburb }}, {{ group.locations_state }}</td> -->
+        <td>{{ group.name }}</td>
+        <td>{{ group.postcode }}</td>
+        <td>{{ group.suburb }}, {{ group.state }}</td>
+        {% if group.admin %}
+        <td>
+            <a href="#">update</a>
+            <a href="#">delete</a>
+        {% elif not group.admin %}
+            <a href="#">unjoin</a>
+        </td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
 
 <h2>Group recommendations</h2>
+{{ non_member }}
+{{ locations }}
+<table>
+    <thead>
+        <th>Group Name</th>
+        <th>Postcode</th>
+        <th>Location</th>
+    </thead>
+    {% for group in recommendations %}
+    {% if group %}
+    <tr>
+        <td>{{ group.name }}</td>
+        <td>{{ group.postcode }}</td>
+        <td>{{ group.suburb }}, {{ group.state }}</td>
+        <td>
+            <a href="#">join</a>
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+
 
 <a href="{{ url_for('groups.create_group') }}">Create new group</a>
 <a href="#">Search group</a>
