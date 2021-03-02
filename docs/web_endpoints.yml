@@ -201,19 +201,11 @@ paths:
             description: "successful operation"
           "302":
             description: "Redirect profile page"
-    /groups/:
+    /web/groups/:
       get:
         tags:
         - "groups"
-        summary: "Get groups"
-        responses:
-          "200":
-            description: "successful operation"
-    /groups/recommendations/:
-      get:
-        tags:
-        - "groups"
-        summary: "Get group recommendations"
+        summary: "Get groups page"
         responses:
           "200":
             description: "successful operation"
@@ -250,6 +242,10 @@ paths:
           - application/x-www-form-urlencoded
         parameters:
           - in: formData
+            name: postcode
+            type: Integer
+            description: Group postcode
+          - in: formData
             name: name
             type: string
             description: New group name
@@ -259,8 +255,8 @@ paths:
             description: Group description
           - in: formData
             name: location
-            type: string
-            description: Group location
+            type: integer
+            description: select location(radio buttons)
         responses:
           "200":
             description: "successful operation"
