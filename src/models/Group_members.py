@@ -1,4 +1,5 @@
 from main import db
+from models.Groups import Groups
 
 
 class GroupMembers(db.Model):
@@ -8,7 +9,7 @@ class GroupMembers(db.Model):
     profile_id = db.Column(
         db.Integer, db.ForeignKey("profile.id"), primary_key=True)
     admin = db.Column(db.Boolean)
-    group = db.relationship("Groups", backref=db.backref(
+    group = db.relationship(Groups, backref=db.backref(
         "profiles", lazy="dynamic"))
     profile = db.relationship(
         "Profile", backref=db.backref("group", lazy="dynamic"))
