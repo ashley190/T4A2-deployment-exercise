@@ -3,11 +3,20 @@
 {% block content %}
 
 <h2>My groups</h2>
-{% for group in groups %}
-<ul>
-    <li>{{ group.location }}</li>
-</ul>
-{% endfor %}
+<table>
+    <thead>
+        <th>Group Name</th>
+        <th>Postcode</th>
+        <th>Location</th>
+    </thead>
+    {% for group in groups %}
+    <tr>
+        <td>{{ group.groups_name }}</td>
+        <!-- <td>{{ group.locations_postcode }}</td>
+        <td>{{ group.locations_suburb }}, {{ group.locations_state }}</td> -->
+    </tr>
+    {% endfor %}
+</table>
 
 <h2>Group recommendations</h2>
 

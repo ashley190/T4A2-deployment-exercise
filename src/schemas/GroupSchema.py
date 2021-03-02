@@ -13,3 +13,16 @@ class GroupSchema(ma.SQLAlchemyAutoSchema):
 
 group_schema = GroupSchema()
 groups_schema = GroupSchema(many=True)
+
+
+class GroupLocationSchema(ma.Schema):
+    id = ma.Integer()
+    admin = ma.Boolean()
+    name = ma.String()
+    postcode = ma.Integer()
+    suburb = ma.String()
+    state = ma.String()
+
+
+group_location_schema = GroupLocationSchema()
+groups_location_schema = GroupLocationSchema(many=True)
