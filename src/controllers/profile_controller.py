@@ -121,7 +121,9 @@ def profile_locations():
     if form.validate_on_submit():
         url = f"http://v0.postcodeapi.com.au/suburbs/{form.postcode.data}.json"
         response = requests.get(url)
-        data = json.loads(response.text)
+        data = json.loads(response.text) or None
+        if not data:
+            flash("No locations found. Try another postcode.")
         return render_template(
             "locations.html", form=form, data=data, form2=form2)
     return render_template("locations.html", form=form)

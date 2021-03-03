@@ -154,7 +154,7 @@ class TestProfile(unittest.TestCase):
                 self.assertIn(b"Melbourne", response.data)
 
         response1 = self.client.post("/web/profile/locationsearch", data={
-            "postcode": "100"
+            "postcode": "1000"
         }, follow_redirects=True)
         self.assertIn(
             b"No locations found. Try another postcode", response1.data)
