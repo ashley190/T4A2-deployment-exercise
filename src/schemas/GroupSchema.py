@@ -20,6 +20,7 @@ class GroupLocationSchema(ma.Schema):
     id = ma.Integer()
     # admin = ma.Boolean()
     name = ma.String()
+    description = ma.String()
     postcode = ma.Integer()
     suburb = ma.String()
     state = ma.String()

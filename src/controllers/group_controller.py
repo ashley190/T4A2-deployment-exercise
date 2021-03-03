@@ -11,9 +11,10 @@ from flask import (
 from flask_login import login_required
 from forms import (
     CreateGroup, SearchLocation, UpdateGroup, UpdateButton, JoinButton,
-    UnjoinButton, DeleteButton)
+    UnjoinButton, DeleteButton, SearchForm)
 import requests
 import json
+from sqlalchemy import or_
 
 groups = Blueprint("groups", __name__, url_prefix="/web/groups")
 
@@ -255,3 +256,35 @@ def delete_group(id):
             flash("Group deleted")
 
         return redirect(url_for("groups.groups_page"))
+
+
+@groups.route("/search", methods=["GET", "POST"])
+@login_required
+def search_group():
+    user_id, profile = retrieve_profile()
+    member_groups = GroupMembers.query.filter_by(profile_id=profile.id).all()
+    member_groupids = [group.group_id for group in member_groups]
+    form = SearchForm()
+    form2 = JoinButton()
+    groups = []
+    if form.validate_on_submit():
+        if form.field.data == 1:
+            keyword = f"%{form.keyword.data}%"
+            groups = Groups.query.with_entities(
+                Groups.id, Groups.name, Groups.description, Location.postcode,
+                Location.suburb, Location.state).join(Location).filter(or_(
+                        Groups.name.ilike(keyword),
+                        Groups.description.ilike(keyword),
+                        Location.suburb.ilike(keyword),
+                        Location.state.ilike(keyword))).filter(
+                            Groups.id.notin_(member_groupids)).all()
+        elif form.field.data == 2:
+            postcode = form.keyword.data
+            groups = Groups.query.with_entities(
+                Groups.id, Groups.name, Groups.description,
+                Location.postcode, Location.suburb, Location.state).join(
+                    Location).filter_by(postcode=postcode).filter(
+                            Groups.id.notin_(member_groupids)).all()
+    return render_template(
+        "group_search.html", form=form, form2=form2, groups=groups,
+        profile=profile)

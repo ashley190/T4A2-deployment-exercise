@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import (StringField, PasswordField, SubmitField,
-                     IntegerField, TextAreaField, RadioField)
+                     IntegerField, TextAreaField, RadioField, SelectField)
 from wtforms.validators import (
     DataRequired,
     EqualTo,
@@ -134,3 +134,23 @@ class JoinButton(FlaskForm):
 
 class UnjoinButton(FlaskForm):
     submit = SubmitField("Unjoin")
+
+
+class SearchForm(FlaskForm):
+    keyword = StringField(
+        "Search keyword",
+        validators=[
+            Length(min=1, message="Keyword must be at least 1 character")
+        ]
+    )
+
+    field = SelectField(
+        "Search Field",
+        choices=[
+            (1, "Group details"),
+            (2, "Postcode")
+        ], coerce=int,
+        validators=[DataRequired()]
+    )
+
+    submit = SubmitField("Search")

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Search Group</h1>
+<form method="POST" action="{{ url_for('groups.search_group') }}">
+    {{ form.csrf_token }}
+    
+    <fieldset class="form-field">
+        {{ form.field.label}}
+        {{ form.field() }}
+    </fieldset>
+
+    <fieldset class="form-field">
+        {{ form.keyword.label }}
+        {{ form.keyword() }}
+    </fieldset>
+
+    {{ form.submit }}
+</form>
+{% if groups | length > 0 %}
+    <h3>Group search results</h3>
+    <table>
+        <thead>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Postcode</th>
+            <th>Location</th>
+        </thead>
+        {% for group in groups %}
+        <tr>
+            <td><a href="{{ url_for('groups.group_details', id=group.id) }}">{{ group.name }}</a></td>
+            <td>{{ group.description }}</td>
+            <td>{{ group.postcode }}</td>
+            <td>{{ group.suburb }}, {{ group.state }}</td>
+            <td>
+                <button>
+                    <form method="POST" action="{{ url_for('groups.join_group', id=group.id) }}">
+                        {{ form2.csrf_token }}
+                        {{ form2.submit }}
+                    </form>
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+{% endblock %}
