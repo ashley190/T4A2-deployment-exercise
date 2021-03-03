@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Add Profile Location</h1>
-<form method="POST" action="{{ url_for('profile.profile_locations') }}">
+<h1>Change Group Location</h1>
+<form method="POST" action="{{ url_for('groups.update_group_location', id=id) }}">
     {{ form.csrf_token }}
 
     <fieldset class="form-field">
@@ -28,7 +28,7 @@
             <td>{{ location["state"]["abbreviation"] }}</td>
             <td>
                 <button>
-                    <form method="POST" action="{{ url_for('profile.add_location', postcode=location['postcode'], suburb=location['name'], state=location['state']['abbreviation']) }}">
+                    <form method="POST" action="{{ url_for('groups.update_location', id=id, postcode=location['postcode'], suburb=location['name'], state=location['state']['abbreviation']) }}">
                         {{ form2.csrf_token }}
                         {{ form2.submit }}
                     </form>

@@ -16,7 +16,7 @@
         <td>{{ group.suburb }}, {{ group.state }}</td>
         {% if group.admin %}
         <td>
-            <a href="#">update</a>
+            <a href="{{ url_for('groups.update_group', id=group.id)}}">update</a>
             <a href="#">delete</a>
         {% elif not group.admin %}
             <a href="#">unjoin</a>

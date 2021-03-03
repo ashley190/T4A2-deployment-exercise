@@ -90,6 +90,10 @@ class AddButton(FlaskForm):
     submit = SubmitField("Add")
 
 
+class UpdateButton(FlaskForm):
+    submit = SubmitField("Update")
+
+
 class CreateGroup(FlaskForm):
     """Create Group"""
     group_name = StringField(
@@ -101,8 +105,24 @@ class CreateGroup(FlaskForm):
     )
 
     group_description = TextAreaField(
-        "Description",
+        "Description"
     )
 
     group_location = RadioField("Group location", choices=[])
     submit = SubmitField("Create Group")
+
+
+class UpdateGroup(FlaskForm):
+    """Update Group"""
+    group_name = StringField(
+        "Group Name",
+        validators=[
+            Length(min=1, message="Group name must be at least 1 character")
+        ]
+    )
+
+    group_description = TextAreaField(
+        "Description"
+    )
+
+    submit = SubmitField("Update Group")
