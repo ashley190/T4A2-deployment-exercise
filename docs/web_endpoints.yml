@@ -209,20 +209,7 @@ paths:
         responses:
           "200":
             description: "successful operation"
-    /groups/{group_id}:
-      get:
-        tags:
-        - "groups"
-        summary: "View group by id"
-        parameters:
-          - name: "group_id"
-            in: "path"
-            required: true
-            type: "integer"
-        responses:
-          "200":
-            description: "successful operation"
-    /groups/create:
+    /web/groups/create:
       get:
         tags:
         - "groups"
@@ -243,7 +230,7 @@ paths:
         parameters:
           - in: formData
             name: postcode
-            type: Integer
+            type: integer
             description: Group postcode
           - in: formData
             name: name
@@ -264,7 +251,20 @@ paths:
             description: "Redirect depending on outcome"
           "401":
             description: "Unauthorised to view page"
-    /groups/{group_id}/update/:
+    /web/groups/{group_id}:
+      get:
+        tags:
+        - "groups"
+        summary: "View group by id"
+        parameters:
+          - name: "group_id"
+            in: "path"
+            required: true
+            type: "integer"
+        responses:
+          "200":
+            description: "successful operation"
+    /web/groups/{group_id}/update/:
       get:
         tags:
         - "groups"
@@ -300,6 +300,41 @@ paths:
             name: description
             type: string
             description: Group description
+        responses:
+          "200":
+            description: "successful operation"
+          "302":
+            description: "Redirect depending on outcome"
+          "401":
+            description: "Unauthorised to view page"
+    /web/groups/{group_id}/location/:
+      get:
+        tags:
+        - "groups"
+        summary: "Update Group Location"
+        parameters:
+          - name: "group_id"
+            in: "path"
+            required: true
+            type: "integer"
+        responses:
+          "200":
+            description: "successful operation"
+          "302":
+            description: "Redirect depending on outcome"
+          "401":
+            description: "Unauthorised to view page"
+      post:
+        tags:
+        - "groups"
+        summary: "Update group location"
+        consumes:
+          - application/x-www-form-urlencoded
+        parameters:
+          - name: "group_id"
+            in: "path"
+            required: true
+            type: "integer"
           - in: formData
             name: location
             type: string
@@ -311,7 +346,36 @@ paths:
             description: "Redirect depending on outcome"
           "401":
             description: "Unauthorised to view page"
-    /groups/{group_id}/delete/:
+    /web/groups/{group_id}/changelocation/:
+      post:
+        tags:
+        - "groups"
+        summary: "Update group locaton"
+        consumes:
+          - application/x-www-form-urlencoded
+        parameters:
+          - name: "group_id"
+            in: "path"
+            required: true
+            type: "integer"
+          - in: formData
+            name: postcode
+            type: integer
+            description: Postcode
+          - in: formData
+            name: suburb
+            type: string
+            description: Suburb
+          - in: formData
+            name: state
+            type: string
+            description: State
+        responses:
+          "200":
+            description: "successful operation"
+          "302":
+            description: "Redirect profile page"
+    /web/groups/{group_id}/delete/:
       post:
         tags:
         - "groups"
@@ -333,8 +397,8 @@ paths:
           "302":
             description: "Redirect depending on outcome"
           "401":
-            description: "Unauthorised to view page"
-    /groups/{group_id}/join/:
+            description: "Unauthorised to delete page"
+    /web/groups/{group_id}/join/:
       post:
         tags:
         - "groups"
@@ -356,8 +420,8 @@ paths:
           "302":
             description: "Redirect depending on outcome"
           "401":
-            description: "Unauthorised to view page"
-    /groups/{group_id}/unjoin/:
+            description: "Unauthorised to join group"
+    /web/groups/{group_id}/unjoin/:
      post:
       tags:
       - "groups"
@@ -384,8 +448,8 @@ paths:
         "302":
           description: "Redirect depending on outcome"
         "401":
-          description: "Unauthorised to view page"
-    /groups/search/:
+          description: "Unauthorised to unjoin group"
+    /web/groups/search/:
       get:
         tags:
         - "groups"
@@ -402,6 +466,10 @@ paths:
         consumes:
           - application/x-www-form-urlencoded
         parameters:
+          - in: formData
+            name: search field
+            type: integer
+            description: Dropdown search field
           - in: formData
             name: search keyword
             type: string
