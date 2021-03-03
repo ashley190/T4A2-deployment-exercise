@@ -20,7 +20,7 @@ def groups_page():
     # My Groups logic
     groups = Groups.query.with_entities(
         Profile.id, GroupMembers.admin, Groups.id,
-        Groups.name, Location.postcode, Location.suburb,
+        Groups.name, Groups.description, Location.postcode, Location.suburb,
         Location.state).select_from(Profile).filter_by(
             id=profile.id).outerjoin(GroupMembers).join(Groups).join(Location)
 
@@ -97,3 +97,14 @@ def create_group():
         return redirect(url_for("groups.groups_page"))
     return render_template(
         "create_group.html", form=form, form2=form2, data=data)
+
+
+@groups.route("/<int:id>", methods=["GET"])
+@login_required
+def group_details(id):
+    group_name = request.args["name"]
+    group_description = request.args["desc"]
+    group_location = f"{request.args['suburb']}, {request.args['state']}"
+    return render_template(
+        "group_detail.html", group_name=group_name,
+        group_description=group_description, group_location=group_location)

@@ -11,7 +11,7 @@
     </thead>
     {% for group in groups %}
     <tr>
-        <td>{{ group.name }}</td>
+        <td><a href="{{ url_for('groups.group_details', id=group.id, name=group.name, desc=group.description, suburb=group.suburb, state=group.state) }}">{{ group.name }}</a></td>
         <td>{{ group.postcode }}</td>
         <td>{{ group.suburb }}, {{ group.state }}</td>
         {% if group.admin %}
