@@ -19,6 +19,9 @@ This section is a continuation of the project tracking activity from PART A-R6. 
 ![Mar 2](docs/trello_screenshots/210302.png)
 *Mar 2*: Profile page testing completed. Group page backend development under way. Completed 3 group page endpoints.
 
+![Mar 3](docs/trello_screenshots/210303.png)
+*Mar 3*: Completed coding group page endpoints and templates. Testing under way.
+
 ## Deployment/Installation steps
 ### Continuous integration/Continuous Deployment(CI/CD)
 
