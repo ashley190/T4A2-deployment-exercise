@@ -9,7 +9,9 @@ from main import db
 from flask import (
     Blueprint, render_template, flash, redirect, url_for, request, abort)
 from flask_login import login_required
-from forms import CreateGroup, SearchLocation, UpdateGroup, UpdateButton
+from forms import (
+    CreateGroup, SearchLocation, UpdateGroup, UpdateButton, JoinButton,
+    UnjoinButton, DeleteButton)
 import requests
 import json
 
@@ -20,6 +22,9 @@ groups = Blueprint("groups", __name__, url_prefix="/web/groups")
 @login_required
 def groups_page():
     user_id, profile = retrieve_profile()
+    form = JoinButton()
+    form2 = UnjoinButton()
+    form3 = DeleteButton()
     # My Groups logic
     groups = Groups.query.with_entities(
         Profile.id, GroupMembers.admin, Groups.id,
@@ -47,13 +52,14 @@ def groups_page():
     # with user's profile
     for group in non_member:
         query = Groups.query.with_entities(
-            Groups.name, Location.postcode, Location.suburb,
+            Groups.id, Groups.name, Location.postcode, Location.suburb,
             Location.state).filter_by(id=group.id).filter(
                 Location.postcode.in_(locations)).join(
                     Location).first()
         recommendations.append(query)
     return render_template(
-        "groups.html", groups=groups, recommendations=recommendations)
+        "groups.html", groups=groups, recommendations=recommendations,
+        form=form, form2=form2, form3=form3)
 
 
 @groups.route("/create", methods=["GET", "POST"])
@@ -178,3 +184,74 @@ def update_location(id):
         db.session.commit()
         flash("Group Location updated")
     return redirect(url_for("groups.update_group", id=id))
+
+
+@groups.route("/<int:id>/join", methods=["POST"])
+@login_required
+def join_group(id):
+    user_id, profile = retrieve_profile()
+    group = Groups.query.get(id)
+    form = JoinButton()
+
+    if form.validate_on_submit():
+        member = GroupMembers.query.filter_by(
+            group_id=id, profile_id=profile.id).first()
+
+        if not member:
+            new_member = GroupMembers()
+            new_member.profile_id = profile.id
+            new_member.group_id = id
+            new_member.admin = False
+            profile.groups.append(new_member)
+            db.session.commit()
+            flash(f"Joined group {group.name}")
+        elif member:
+            flash("Unable to join group")
+    return redirect(url_for("groups.groups_page"))
+
+
+@groups.route("/<int:id>/unjoin", methods=["POST"])
+@login_required
+def unjoin_group(id):
+    user_id, profile = retrieve_profile()
+    form = UnjoinButton()
+
+    if form.validate_on_submit():
+        member = GroupMembers.query.filter_by(
+            group_id=id, profile_id=profile.id).first()
+
+        if member:
+            profile.groups.remove(member)
+            db.session.delete(member)
+            db.session.commit()
+            flash("Unjoined group")
+        elif not member:
+            flash("Not a member of this group")
+    return redirect(url_for("groups.groups_page"))
+
+
+@groups.route("/<int:id>/delete", methods=["POST"])
+@login_required
+def delete_group(id):
+    form = DeleteButton()
+    user_id, profile = retrieve_profile()
+    group = Groups.query.filter_by(id=id).first()
+    group_members = GroupMembers.query.filter_by(group_id=id).all()
+    location = Location.query.filter_by(group_id=id).first()
+
+    if form.validate_on_submit():
+        admin = GroupMembers.query.filter_by(
+            group_id=id, profile_id=profile.id).first()
+
+        if not admin.admin:
+            flash("Not authorised to delete group")
+        elif admin.admin:
+            for member in group_members:
+                db.session.delete(member)
+            # db.session.delete(admin)
+            db.session.delete(location)
+            db.session.delete(group)
+            db.session.commit()
+            flash("Group deleted")
+
+        return redirect(url_for("groups.groups_page"))

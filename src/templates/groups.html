@@ -17,9 +17,21 @@
         {% if group.admin %}
         <td>
             <a href="{{ url_for('groups.update_group', id=group.id)}}">update</a>
-            <a href="#">delete</a>
+            <button>
+                <form method="POST" action="{{ url_for('groups.delete_group', id=group.id) }}">
+                    {{ form3.csrf_token }}
+                    {{ form3.submit }}
+                </form>
+            </button>
+        </td>
         {% elif not group.admin %}
-            <a href="#">unjoin</a>
+        <td>
+            <button>
+                <form method="POST" action="{{ url_for('groups.unjoin_group', id=group.id) }}">
+                    {{ form2.csrf_token }}
+                    {{ form2.submit }}
+                </form>
+            </button>
         </td>
         {% endif %}
     </tr>
@@ -42,7 +54,12 @@
         <td>{{ group.postcode }}</td>
         <td>{{ group.suburb }}, {{ group.state }}</td>
         <td>
-            <a href="#">join</a>
+            <button>
+                <form method="POST" action="{{ url_for('groups.join_group', id=group.id) }}">
+                    {{ form.csrf_token }}
+                    {{ form.submit }}
+                </form>
+            </button>
         </td>
     </tr>
     {% endif %}

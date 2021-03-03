@@ -126,3 +126,11 @@ class UpdateGroup(FlaskForm):
     )
 
     submit = SubmitField("Update Group")
+
+
+class JoinButton(FlaskForm):
+    submit = SubmitField("Join")
+
+
+class UnjoinButton(FlaskForm):
+    submit = SubmitField("Unjoin")

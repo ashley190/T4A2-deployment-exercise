@@ -9,8 +9,12 @@ class Groups(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False, unique=False)
     description = db.Column(db.Text, nullable=True, unique=False)
-    location = db.relationship(Location, backref="group", lazy="dynamic")
-    members = db.relationship("GroupMembers", backref="groups")
+    location = db.relationship(
+        Location, backref="group", lazy="dynamic",
+        cascade="all, delete, delete-orphan", passive_deletes=True)
+    members = db.relationship(
+        "GroupMembers", backref="groups",
+        cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __repr__(self):
         return f"<Group: {self.name}>"
