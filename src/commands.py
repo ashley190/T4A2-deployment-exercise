@@ -126,23 +126,21 @@ def seed_db():
     for profile in Profile.query.all():
         """Add two locations to each profile not currently associated with the profile
         and not associated with locations of any groups the profile
-        is an admin of"""
+        is an admin of to test group recommendation functionality"""
+        profile_postcodes = Location.query.with_entities(
+            Location.postcode).filter_by(profile_id=profile.id).all()
+        non_group_locations = GroupMembers.query.with_entities(
+            Location.postcode, Location.suburb, Location.state).select_from(
+                GroupMembers).join(Groups).join(Location).filter(
+                    GroupMembers.profile_id != profile.id).all()
+        available_locations = []
+        for location in non_group_locations:
+            if location.postcode not in profile_postcodes:
+                available_locations.append(location)
         for i in range(1, 3):
-            profile_postcodes = Location.query.with_entities(
-                Location.postcode).filter_by(profile_id=profile.id).all()
-            non_group_postcodes = GroupMembers.query.with_entities(
-                Location.postcode).select_from(GroupMembers).join(Groups).join(
-                    Location).filter(
-                        GroupMembers.profile_id != profile.id).all()
-            available_postcodes = []
-            for postcode in non_group_postcodes:
-                if postcode not in profile_postcodes:
-                    available_postcodes.append(postcode)
-            selected_postcode = random.choice(available_postcodes)
-            available_postcodes.remove(selected_postcode)
+            selected_location = random.choice(available_locations)
+            available_locations.remove(selected_location)
 
-            new_location = Location.query.filter_by(
-                postcode=selected_postcode).first()
             add_location = Location()
             add_location.postcode = new_location.postcode
             add_location.suburb = new_location.suburb

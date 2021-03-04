@@ -64,7 +64,7 @@ class TestProfile(unittest.TestCase):
 
         self.assertEqual(response1.status_code, 200)
         self.assertIn((self.profile.name).encode('utf-8'), response1.data)
-        self.assertEqual(len(self.locations), 3)
+        self.assertEqual(len(self.locations), 7)
         self.assertIn((self.image.filename).encode("utf-8"), response1.data)
 
         for location in self.locations:
