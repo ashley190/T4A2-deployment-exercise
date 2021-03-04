@@ -64,17 +64,19 @@ def seed_db():
     profile_locations = {}
 
     for i in range(1, 6):
-        """Seed users table with 5 users and password("123456").
-        Each user has 1 associated profile,
-        each profile has 1 profile image stored on AWS S3 bucket,
-        each profile has 5 random locations associated with it.
-        """
+        """Seed users table with 5 users and password("123456")."""
         user = Users()
         user.username = f"tester{i}"
         user.set_password("123456")
         db.session.add(user)
         users.append(user)
+    db.session.commit()
 
+    for i in range(1, 5):
+        """Creates 4 profile with tester5 having no profile,
+        each profile has 1 profile image stored on AWS S3 bucket,
+        each profile has 5 random locations associated with it.
+        """
         profile = Profile()
         profile.name = faker.first_name()
         profile.user_id = i
@@ -96,7 +98,7 @@ def seed_db():
             new_location.profile_id = profile.id
             profile.locations.append(new_location)
             profile_locations[i].append(new_location)
-        db.session.commit()
+    db.session.commit()
 
     for profile in Profile.query.all():
         """Seed groups table with 8 groups each with each profile as group admin
@@ -123,7 +125,7 @@ def seed_db():
 
             GroupMembers(group=group, profile_id=profile.id, admin=True)
             db.session.add(group, gp_location)
-        db.session.commit()
+    db.session.commit()
 
     for profile in Profile.query.all():
         """Add two locations to each profile not currently associated with the profile
@@ -139,20 +141,17 @@ def seed_db():
         for location in non_group_locations:
             if location.postcode not in profile_postcodes:
                 available_locations.append(location)
-        print(f"Before:{available_locations}")
         for i in range(1, 3):
             selected_location = random.choice(available_locations)
             available_locations.remove(selected_location)
-            print(f"Selected: {selected_location}")
-            print(f"After: {available_locations}")
 
             add_location = Location()
             add_location.postcode = selected_location.postcode
             add_location.suburb = selected_location.suburb
-            add_location.state =  selected_location.state
+            add_location.state = selected_location.state
             add_location.profile_id = profile.id
             profile.locations.append(add_location)
             db.session.add(add_location)
-        db.session.commit()
+    db.session.commit()
 
     print("Test database seeded")
