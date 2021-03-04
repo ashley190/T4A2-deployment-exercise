@@ -1,3 +1,4 @@
+
 from models.Profile import Profile
 from models.ProfileImage import ProfileImage
 from models.Locations import Location
@@ -5,35 +6,23 @@ from main import db
 from flask import (current_app, Blueprint, render_template,
                    redirect, url_for, flash, request)
 from flask_login import current_user, login_required
+from controllers.controller_helpers import Helpers
 import boto3
-import os
-import requests
-import json
 from forms import (ProfileForm, ProfileImageUpload,
                    DeleteButton, SearchLocation, AddButton)
 
 profile = Blueprint('profile', __name__, url_prefix="/web/profile")
 
 
-def retrieve_profile():
-    user_id = current_user.get_id()
-    profile = Profile.query.filter_by(user_id=user_id).first()
-    return user_id, profile
-
-
-def retrieve_profile_picture(profile_image):
-    s3 = boto3.client('s3')
-    bucket = os.environ.get("AWS_S3_BUCKET")
-    url = s3.generate_presigned_url('get_object', Params={
-        "Bucket": bucket,
-        "Key": f"profile_images/{profile_image.filename}"}, ExpiresIn=5)
-    return url
-
-
-@profile.route("/", methods=["GET", "POST"])
+@profile.route("/", methods=["GET"])
 @login_required
 def profile_page():
-    user_id, profile = retrieve_profile()
+    """
+    User profile page
+
+    Renders profile page
+    """
+    user_id, profile = Helpers.retrieve_profile()
     image = None
     locations = None
 
@@ -44,7 +33,7 @@ def profile_page():
         profile_image = ProfileImage.query.filter_by(
             profile_id=profile.id).first()
         if profile_image:
-            image = retrieve_profile_picture(profile_image)
+            image = Helpers.retrieve_profile_picture(profile_image)
         locations = Location.query.filter_by(profile_id=profile.id).all()
 
     return render_template(
@@ -54,6 +43,13 @@ def profile_page():
 @profile.route("/profilename", methods=["GET", "POST"])
 @login_required
 def profile_name():
+    """
+    Profile name page - for new users.
+
+    GET requests renders profile name page with ProfileForm
+    POST requests validate form and handles confirmation of new
+    user's profile name.
+    """
     user_id = current_user.get_id()
     form = ProfileForm()
     if form.validate_on_submit():
@@ -71,7 +67,15 @@ def profile_name():
 @profile.route("/uploadimage", methods=["GET", "POST"])
 @login_required
 def profile_image():
-    user_id, profile = retrieve_profile()
+    """
+    Profile image upload page
+
+    GET requests renders profile image upload page
+    with options to upload and remove profile image.
+    POST requests validates profile image upload form and handles
+    profile picture upload to designated AWS S3 bucket
+    """
+    user_id, profile = Helpers.retrieve_profile()
 
     form = ProfileImageUpload()
     if form.validate_on_submit():
@@ -82,6 +86,7 @@ def profile_image():
         key = f"profile_images/{filename}"
         bucket.upload_fileobj(image, key)
 
+        # creates database link to image filename if it doesn't already exist.
         if not profile.profile_image:
             new_image = ProfileImage()
             new_image.filename = filename
@@ -96,7 +101,10 @@ def profile_image():
 @profile.route("/deleteimage", methods=["POST"])
 @login_required
 def remove_image():
-    user_id, profile = retrieve_profile()
+    """
+    Handles removal of profile image from S3 bucket
+    """
+    user_id, profile = Helpers.retrieve_profile()
 
     delete = DeleteButton()
     if delete.validate_on_submit():
@@ -115,13 +123,19 @@ def remove_image():
 @profile.route("/locationsearch", methods=["GET", "POST"])
 @login_required
 def profile_locations():
+    """
+    Location search page
+
+    GET requests render search page starting with a postcode search option,
+    followed by search results after postcode search completed.
+    POST requests handles location search by postcode using an external
+    API (postcodeAPI).
+    """
     form = SearchLocation()
     form2 = AddButton()
 
     if form.validate_on_submit():
-        url = f"http://v0.postcodeapi.com.au/suburbs/{form.postcode.data}.json"
-        response = requests.get(url)
-        data = json.loads(response.text) or None
+        data = Helpers.location_search(form.postcode.data)
         if not data:
             flash("No locations found. Try another postcode.")
         return render_template(
@@ -132,7 +146,11 @@ def profile_locations():
 @profile.route("/addlocation", methods=["POST"])
 @login_required
 def add_location():
-    user_id, profile = retrieve_profile()
+    """
+    Handles logic for associating a selected location(returned from
+    location search) to a user profile.
+    """
+    user_id, profile = Helpers.retrieve_profile()
     form = AddButton()
 
     if form.validate_on_submit():
