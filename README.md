@@ -22,6 +22,9 @@ This section is a continuation of the project tracking activity from PART A-R6. 
 ![Mar 3](docs/trello_screenshots/210303.png)
 *Mar 3*: Completed coding group page endpoints and templates. Testing under way.
 
+![Mar 4](docs/trello_screenshots/210304.png)
+*Mar 4*: Group page testing delayed due to difficulties seeding test db for group page endpoint testing and code refactoring. Development and testing of content page delayed by a day.
+
 ## Deployment/Installation steps
 ### Continuous integration/Continuous Deployment(CI/CD)
 
