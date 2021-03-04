@@ -94,6 +94,7 @@ def create_group():
         new_group = Groups()
         new_group.name = form2.group_name.data
         new_group.description = form2.group_description.data
+
         new_location = Location()
         new_location.postcode = location["postcode"]
         new_location.suburb = location["name"]
