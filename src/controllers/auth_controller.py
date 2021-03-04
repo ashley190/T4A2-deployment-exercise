@@ -18,6 +18,7 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorised():
+    """Unauthorised user handler"""
     flash("You must be logged in to view this page")
     return redirect(url_for("auth.login"))
 
@@ -78,5 +79,6 @@ def login():
 @auth.route("/logout")
 @login_required
 def logout():
+    """Logs out currently logged-in user"""
     logout_user()
     return redirect(url_for("auth.login"))

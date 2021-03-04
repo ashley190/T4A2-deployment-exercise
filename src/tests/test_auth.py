@@ -1,31 +1,11 @@
-import unittest
 from models.User import Users
 from schemas.UserSchema import users_schema
-from main import create_app, db
-from helpers import captured_templates
+from flask import url_for
+from helpers import captured_templates, Helpers
 import forms
 
 
-class TestAuth(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.app = create_app()
-        cls.app_context = cls.app.app_context()
-        cls.app_context.push()
-        cls.client = cls.app.test_client()
-        db.create_all()
-
-        runner = cls.app.test_cli_runner()
-        result = runner.invoke(args=["db-custom", "seed"])
-        if result.exit_code != 0:
-            raise ValueError(result.stdout)
-
-    @classmethod
-    def tearDownClass(cls):
-        db.session.remove()
-        db.drop_all()
-        cls.app_context.pop()
-
+class TestAuth(Helpers):
     def test_register(self):
         with self.client as c:
             with captured_templates(self.app) as templates:
@@ -59,18 +39,13 @@ class TestAuth(unittest.TestCase):
             "password": "password1.",
             "confirm": "password2."
         }
+        endpoint = url_for("auth.register")
 
-        response1 = self.client.post(
-            "/web/registration",
-            data=registration_data1,
-            follow_redirects=True)
-        self.client.get("/web/logout")
-        response2 = self.client.post(
-            "/web/registration", data=registration_data2)
-        response3 = self.client.post(
-            "/web/registration", data=registration_data3)
-        response4 = self.client.post(
-            "/web/registration", data=registration_data4)
+        response1 = self.post_request(endpoint, registration_data1)
+        response2 = self.post_request(endpoint, registration_data2)
+        response3 = self.post_request(endpoint, registration_data3)
+        response4 = self.post_request(endpoint, registration_data4)
+        self.logout()
 
         users = Users.query.all()
         data = users_schema.dump(users)
@@ -108,14 +83,12 @@ class TestAuth(unittest.TestCase):
             "username": "",
             "password": ""
         }
-        response1 = self.client.post(
-            "/web/login", data=login_data1, follow_redirects=True)
-        self.client.get("/web/logout")
-        response2 = self.client.post(
-            "/web/login", data=login_data2, follow_redirects=True)
-        self.client.get("/web/logout")
-        response3 = self.client.post(
-            "/web/login", data=login_data3, follow_redirects=True)
+        response1 = self.login(login_data1)
+        self.logout()
+        response2 = self.login(login_data2)
+        self.logout()
+        response3 = self.login(login_data3)
+        self.logout()
 
         self.assertEqual(response1.status_code, 200)
         self.assertIn(b"Profile", response1.data)
