@@ -542,3 +542,86 @@ class TestGroups(Helpers):
         self.assertIsNotNone(group_check_after)
 
         self.logout()
+
+    def test_search_group(self):
+        """Tests group search functionality"""
+
+        # login as valid user
+        data = {
+            "username": "tester1",
+            "password": "123456"
+        }
+        self.login(data)
+
+        # setup variables for group search testing
+        group_member = Groups.query.with_entities(
+            Groups.id).join(GroupMembers).filter_by(profile_id=1).all()
+        group_member_ids = [num[0] for num in group_member]
+        all_groupids = [group.id for group in (Groups.query.all())]
+        non_groupids = [
+            num for num in all_groupids if num not in group_member_ids]
+        non_group_locations = []
+        for num in non_groupids:
+            location = Location.query.filter_by(group_id=num).first()
+            non_group_locations.append(location.postcode)
+        selected_non_group_location = random.choice(non_group_locations)
+
+        # search data
+        data1 = {
+            "field": 1,
+            "keyword": "cafe"
+        }
+
+        data2 = {
+            "field": 2,
+            "keyword": selected_non_group_location
+        }
+
+        # tests captured templates and data in get and post requests
+        # to the group search endpoint.
+        with self.client as c:
+            with captured_templates(self.app) as templates:
+                response = c.get(url_for("groups.search_group"))
+                template, context = templates[0]
+
+                self.assertEqual(template.name, "group_search.html")
+                self.assertIsInstance(context["form"], forms.SearchForm)
+                self.assertIsInstance(context["form2"], forms.JoinButton)
+                self.assertEqual(context["groups"], [])
+
+            # tests keyword search
+            with captured_templates(self.app) as templates:
+                response = c.post(url_for("groups.search_group"), data=data1)
+                template, context = templates[0]
+
+                groups = []
+                for num in group_member_ids:
+                    result = Groups.query.get(num)
+                    groups.append(result.id)
+
+                for result in context["groups"]:
+                    self.assertIn(data1["keyword"], result[1])
+                    self.assertIn(data1["keyword"], result[2])
+                    self.assertNotIn(result[0], groups)
+                    self.assertIn(b"Group search results", response.data)
+                    self.assertIn(self.encode(
+                        f"{data1['keyword']}"), response.data)
+
+            # tests postcode search
+            with captured_templates(self.app) as templates:
+                response = c.post(url_for("groups.search_group"), data=data2)
+                template, context = templates[0]
+
+                groups = []
+                for num in group_member_ids:
+                    result = Groups.query.get(num)
+                    groups.append(result.id)
+
+                for result in context["groups"]:
+                    self.assertEqual(data2["keyword"], result[3])
+                    self.assertNotIn(result[0], groups)
+                    self.assertIn(b"Group search results", response.data)
+                    self.assertIn(self.encode(
+                        f"{data2['keyword']}"), response.data)
+
+        self.logout()

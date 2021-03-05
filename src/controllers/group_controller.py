@@ -359,5 +359,4 @@ def search_group():
                     Location).filter_by(postcode=postcode).filter(
                             Groups.id.notin_(member_groupids)).all()
     return render_template(
-        "group_search.html", form=form, form2=form2, groups=groups,
-        profile=profile)
+        "group_search.html", form=form, form2=form2, groups=groups)
