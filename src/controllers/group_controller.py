@@ -197,6 +197,13 @@ def update_group_location(id):
     POST requests validates location search form and location search
     on external API.
     """
+    user_id, profile = Helpers.retrieve_profile()
+
+    admin_check = GroupMembers.query.filter_by(
+        group_id=id, profile_id=profile.id, admin=True).first()
+    if not admin_check:
+        return abort(401, description="Not authorised to update group")
+
     form = SearchLocation()
     form2 = UpdateButton()
 
@@ -224,7 +231,7 @@ def update_location(id):
             "suburb": request.args["suburb"],
             "state": request.args["state"]
         }
-        fields = location_schema.load(data, partial=True)
+        fields = location_schema.load(data)
         group_location.update(fields)
         db.session.commit()
         flash("Group Location updated")

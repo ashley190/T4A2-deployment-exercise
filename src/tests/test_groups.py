@@ -266,3 +266,90 @@ class TestGroups(Helpers):
         self.assertEqual(response_4.status_code, 401)
 
         self.logout()
+
+    def test_update_group_location(self):
+        """Test rendering and logic for update group location page"""
+
+        # login as valid user
+        data = {
+            "username": "tester2",
+            "password": "123456"
+        }
+        self.login(data)
+
+        # set up variables for endpoint testing with:-
+        # 1 group id where user is admin
+        # 1 group id where user is member but not admin
+        # 1 group id where user is not a member
+        # data to be used for post request to update group location
+        member_groups = GroupMembers.query.filter_by(profile_id=2).all()
+        member_groupids = [group.group_id for group in member_groups]
+        non_member_groups = GroupMembers.query.filter(
+            GroupMembers.group_id.notin_(member_groupids)).all()
+
+        self.post_request(url_for(
+            "groups.join_group", id=non_member_groups[0].group_id))
+        member_groups = GroupMembers.query.filter_by(profile_id=2).all()
+        member_groupids = [group.group_id for group in member_groups]
+        non_member_groups = GroupMembers.query.filter(
+            GroupMembers.group_id.notin_(member_groupids)).all()
+
+        selected_admin_id = member_groupids[0]
+        selected_non_admin_id = member_groupids[-1]
+        selected_non_member_id = random.choice(non_member_groups)
+
+        data = {
+            "postcode": "3040"
+        }
+
+        # test captured templates and logic on successful get and
+        # post requests (valid group admin)
+        with self.client as c:
+            with captured_templates(self.app) as templates:
+                response = c.get(url_for(
+                    "groups.update_group_location",
+                    id=selected_admin_id), follow_redirects=True)
+                template, context = templates[0]
+
+                self.assertEqual(template.name, "group_location.html")
+                self.assertIsInstance(context["form"], forms.SearchLocation)
+
+            with captured_templates(self.app) as templates:
+                response = c.post(url_for(
+                    "groups.update_group_location",
+                    id=selected_admin_id), data=data, follow_redirects=True)
+                template, context = templates[0]
+
+                locations = cont_helpers.location_search(data["postcode"])
+
+                self.assertEqual(template.name, "group_location.html")
+                self.assertIsInstance(context["form"], forms.SearchLocation)
+                self.assertIsInstance(context["form2"], forms.UpdateButton)
+                self.assertEqual(response.status_code, 200)
+                for location in locations:
+                    self.assertIn(self.encode(
+                        f"{location['postcode']}"), response.data)
+                    self.assertIn(self.encode(
+                        location["name"]), response.data)
+                    self.assertIn(self.encode(
+                        location["state"]["abbreviation"]), response.data)
+
+        # test get and post requests for non-group admins and non-members
+        response_1 = self.get_request(url_for(
+            "groups.update_group_location", id=selected_non_admin_id))
+        response_2 = self.get_request(url_for(
+            "groups.update_group_location",
+            id=selected_non_member_id.group_id))
+        response_3 = self.post_request(url_for(
+            "groups.update_group_location",
+            id=selected_non_admin_id), data=data)
+        response_4 = self.post_request(url_for(
+            "groups.update_group_location",
+            id=selected_non_member_id.group_id), data=data)
+
+        self.assertEqual(response_1.status_code, 401)
+        self.assertEqual(response_2.status_code, 401)
+        self.assertEqual(response_3.status_code, 401)
+        self.assertEqual(response_4.status_code, 401)
+
+        self.logout()
