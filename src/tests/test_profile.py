@@ -36,7 +36,7 @@ class TestProfile(Helpers):
         # test captured template for profile_page
         with self.client as c:
             with captured_templates(self.app) as templates:
-                response = c.get("/web/profile/")
+                response = c.get(url_for("profile.profile_page"))
                 template, context = templates[0]
 
                 self.assertEqual(response.status_code, 200)
@@ -47,13 +47,13 @@ class TestProfile(Helpers):
         response1 = self.get_request(url_for("profile.profile_page"))
 
         self.assertEqual(response1.status_code, 200)
-        self.assertIn((self.profile.name).encode('utf-8'), response1.data)
+        self.assertIn(self.encode(self.profile.name), response1.data)
         self.assertEqual(len(self.locations), 7)
-        self.assertIn((self.image.filename).encode("utf-8"), response1.data)
+        self.assertIn(self.encode(self.image.filename), response1.data)
         for location in self.locations:
             self.assertIn(
-                str(location.postcode).encode("utf-8"), response1.data)
-            self.assertIn((location.suburb).encode("utf-8"), response1.data)
+                self.encode(f"{location.postcode}"), response1.data)
+            self.assertIn(self.encode(location.suburb), response1.data)
 
         self.logout()
 
@@ -71,7 +71,8 @@ class TestProfile(Helpers):
         # test captured template for new users without a profile name
         with self.client as c:
             with captured_templates(self.app) as templates:
-                response = c.get("/web/profile", follow_redirects=True)
+                response = c.get(
+                    url_for("profile.profile_page"), follow_redirects=True)
                 template, context = templates[0]
 
                 self.assertEqual(response.status_code, 200)
@@ -108,7 +109,7 @@ class TestProfile(Helpers):
         image2 = ProfileImage.query.filter_by(profile_id=profile.id).first()
 
         self.assertTrue(response2.status_code, 200)
-        self.assertIn((image1.filename).encode("utf-8"), response2.data)
+        self.assertIn(self.encode(image1.filename), response2.data)
         self.assertIsNone(image2)
         self.assertIn(b"Image removed", response3.data)
         self.assertIn(b"default.png", response1.data)
@@ -139,7 +140,8 @@ class TestProfile(Helpers):
         with self.client as c:
             with captured_templates(self.app) as templates:
                 response = c.get(
-                    "/web/profile/locationsearch", follow_redirects=True)
+                    url_for("profile.profile_locations"),
+                    follow_redirects=True)
                 template, context = templates[0]
 
                 self.assertEqual(response.status_code, 200)
@@ -148,7 +150,7 @@ class TestProfile(Helpers):
 
             with captured_templates(self.app) as templates:
                 response = c.post(
-                    "/web/profile/locationsearch",
+                    url_for("profile.profile_locations"),
                     data={"postcode": "3000"}, follow_redirects=True)
                 template, context = templates[0]
 

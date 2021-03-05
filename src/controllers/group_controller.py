@@ -35,7 +35,8 @@ def groups_page():
         Profile.id, GroupMembers.admin, Groups.id,
         Groups.name, Groups.description, Location.postcode, Location.suburb,
         Location.state).select_from(Profile).filter_by(
-            id=profile.id).outerjoin(GroupMembers).join(Groups).join(Location)
+            id=profile.id).outerjoin(GroupMembers).join(
+                Groups).join(Location).all()
 
     # Group recommendations section logic. Retrieves and displays groups that
     # is not associated with the current user's profile but has a group
@@ -164,7 +165,7 @@ def update_group(id):
     form = UpdateGroup()
 
     admin_check = GroupMembers.query.filter_by(
-        group_id=id, profile_id=profile.id).first()
+        group_id=id, profile_id=profile.id, admin=True).first()
     if not admin_check:
         return abort(401, description="Not authorised to update group")
 
@@ -196,6 +197,13 @@ def update_group_location(id):
     POST requests validates location search form and location search
     on external API.
     """
+    user_id, profile = Helpers.retrieve_profile()
+
+    admin_check = GroupMembers.query.filter_by(
+        group_id=id, profile_id=profile.id, admin=True).first()
+    if not admin_check:
+        return abort(401, description="Not authorised to update group")
+
     form = SearchLocation()
     form2 = UpdateButton()
 
@@ -223,7 +231,7 @@ def update_location(id):
             "suburb": request.args["suburb"],
             "state": request.args["state"]
         }
-        fields = location_schema.load(data, partial=True)
+        fields = location_schema.load(data)
         group_location.update(fields)
         db.session.commit()
         flash("Group Location updated")
@@ -252,7 +260,7 @@ def join_group(id):
             db.session.commit()
             flash(f"Joined group {group.name}")
         elif member:
-            flash("Unable to join group")
+            flash("Already a member.")
     return redirect(url_for("groups.groups_page"))
 
 
@@ -269,13 +277,15 @@ def unjoin_group(id):
         member = GroupMembers.query.filter_by(
             group_id=id, profile_id=profile.id).first()
 
-        if member:
+        if not member:
+            flash("Not a member of this group")
+        elif member.admin:
+            return abort(401, description="Admin cannot unjoin group")
+        elif not member.admin:
             profile.groups.remove(member)
             db.session.delete(member)
             db.session.commit()
             flash("Unjoined group")
-        elif not member:
-            flash("Not a member of this group")
     return redirect(url_for("groups.groups_page"))
 
 
@@ -293,11 +303,11 @@ def delete_group(id):
 
     if form.validate_on_submit():
         admin = GroupMembers.query.filter_by(
-            group_id=id, profile_id=profile.id).first()
+            group_id=id, profile_id=profile.id, admin=True).first()
 
-        if not admin.admin:
-            flash("Not authorised to delete group")
-        elif admin.admin:
+        if not admin:
+            return abort(401, description="Unauthorised to delete group")
+        elif admin:
             for member in group_members:
                 db.session.delete(member)
             db.session.delete(location)
@@ -349,5 +359,4 @@ def search_group():
                     Location).filter_by(postcode=postcode).filter(
                             Groups.id.notin_(member_groupids)).all()
     return render_template(
-        "group_search.html", form=form, form2=form2, groups=groups,
-        profile=profile)
+        "group_search.html", form=form, form2=form2, groups=groups)
