@@ -48,7 +48,8 @@ class Helpers(unittest.TestCase):
 
     @classmethod
     def login(cls, data):
-        return cls.client.post(url_for("auth.login"), data=data, follow_redirects=True)
+        return cls.client.post(
+            url_for("auth.login"), data=data, follow_redirects=True)
 
     @classmethod
     def logout(cls):

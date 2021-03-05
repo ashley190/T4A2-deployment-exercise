@@ -42,8 +42,8 @@ class TestAuth(Helpers):
             "password": "pw.",
             "confirm": "pw."
         }
-        
-        #registration data (password mismatch)
+
+        # registration data (password mismatch)
         registration_data4 = {
             "username": "testerb",
             "password": "password1.",
@@ -75,7 +75,7 @@ class TestAuth(Helpers):
     def test_login(self):
         """Test  rendering of login page as well as login logic"""
 
-        #test captured template and form for login page
+        # test captured template and form for login page
         with self.client as c:
             with captured_templates(self.app) as templates:
                 response = c.get(url_for("auth.login"))
