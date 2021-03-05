@@ -260,7 +260,7 @@ def join_group(id):
             db.session.commit()
             flash(f"Joined group {group.name}")
         elif member:
-            flash("Unable to join group")
+            flash("Already a member.")
     return redirect(url_for("groups.groups_page"))
 
 
@@ -277,13 +277,15 @@ def unjoin_group(id):
         member = GroupMembers.query.filter_by(
             group_id=id, profile_id=profile.id).first()
 
-        if member:
+        if not member:
+            flash("Not a member of this group")
+        elif member.admin:
+            return abort(401, description="Admin cannot unjoin group")
+        elif not member.admin:
             profile.groups.remove(member)
             db.session.delete(member)
             db.session.commit()
             flash("Unjoined group")
-        elif not member:
-            flash("Not a member of this group")
     return redirect(url_for("groups.groups_page"))
 
 

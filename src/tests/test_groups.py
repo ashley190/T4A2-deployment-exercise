@@ -217,7 +217,8 @@ class TestGroups(Helpers):
         }
 
         # test captured templates and logic on successful get and
-        # post requests (valid group admin)
+        # post requests (valid group admin) and compare with updated data in
+        # database
         with self.client as c:
             with captured_templates(self.app) as templates:
                 response = c.get(
@@ -240,6 +241,8 @@ class TestGroups(Helpers):
 
                 location = Location.query.filter_by(
                     group_id=selected_admin_id).first()
+                new_group_details = Groups.query.filter_by(
+                    id=selected_admin_id).first()
 
                 self.assertEqual(template.name, "groups.html")
                 self.assertEqual(response.status_code, 200)
@@ -248,6 +251,9 @@ class TestGroups(Helpers):
                 self.assertIn(self.encode("Group updated"), response.data)
                 self.assertIn(self.encode(
                     f"{location.suburb}, {location.state}"), response.data)
+                self.assertEqual(new_group_details.name, data["group_name"])
+                self.assertEqual(
+                    new_group_details.description, data["description"])
 
         # test get and post requests for non-group admins and non-members
         response_1 = self.get_request(url_for(
@@ -351,5 +357,136 @@ class TestGroups(Helpers):
         self.assertEqual(response_2.status_code, 401)
         self.assertEqual(response_3.status_code, 401)
         self.assertEqual(response_4.status_code, 401)
+
+        # test change group location endpoint
+        locations = cont_helpers.location_search(data["postcode"])
+        selected_location = random.choice(locations)
+        postcode = selected_location["postcode"]
+        suburb = selected_location["name"]
+        state = selected_location["state"]["abbreviation"]
+
+        response_5 = self.post_request(url_for(
+            "groups.update_location", id=selected_admin_id,
+            postcode=postcode, suburb=suburb, state=state))
+        new_group_location = Location.query.filter_by(
+            group_id=selected_admin_id).first()
+
+        self.assertEqual(response_5.status_code, 200)
+        self.assertEqual(new_group_location.postcode, postcode)
+        self.assertEqual(new_group_location.suburb, suburb)
+        self.assertEqual(new_group_location.state, state)
+
+        self.logout()
+
+    def test_join_group(self):
+        """Tests logic for joining groups"""
+        # login as valid user
+        data = {
+            "username": "tester4",
+            "password": "123456"
+        }
+        self.login(data)
+
+        # prepare variables required for group_join tests
+        groups = GroupMembers.query.filter_by(profile_id=4).all()
+        groupids = [group.group_id for group in groups]
+        all_groupids = [group.id for group in (Groups.query.all())]
+        non_groupids = [num for num in all_groupids if num not in groupids]
+
+        selected_groupid = random.choice(groupids)
+        selected_non_groupid = random.choice(non_groupids)
+
+        # endpoints for join_group tests
+        endpoint1 = url_for("groups.join_group", id=selected_non_groupid)
+        endpoint2 = url_for("groups.join_group", id=selected_groupid)
+
+        # check logic and database update for valid join request
+        response1 = self.post_request(endpoint1)
+        group_check = GroupMembers.query.filter_by(
+            profile_id=4, group_id=selected_non_groupid).first()
+        new_group = Groups.query.with_entities(
+            Groups.name, Location.postcode, Location.suburb,
+            Location.state).filter_by(id=group_check.group_id).join(
+                Location).first()
+
+        self.assertEqual(response1.status_code, 200)
+        self.assertIsNotNone(group_check)
+        self.assertFalse(group_check.admin)
+        self.assertIn(self.encode(new_group.name), response1.data)
+        self.assertIn(self.encode(f"{new_group.postcode}"), response1.data)
+        self.assertIn(self.encode(
+            f"{new_group.suburb}, {new_group.state}"), response1.data)
+
+        # check logic and database for invalid join request
+        group_check_before = GroupMembers.query.filter_by(
+            profile_id=4, group_id=selected_groupid).first()
+        response2 = self.post_request(endpoint2)
+        group_check_after = GroupMembers.query.filter_by(
+            profile_id=4, group_id=selected_groupid).first()
+
+        self.assertEqual(response2.status_code, 200)
+        self.assertIn(b"Already a member", response2.data)
+        self.assertIsNotNone(group_check_before)
+        self.assertIsNotNone(group_check_after)
+
+        self.logout()
+
+    def test_unjoin_group(self):
+        """Tests unjoin group logic"""
+
+        # login as valid user
+        data = {
+            "username": "tester3",
+            "password": "123456"
+        }
+        self.login(data)
+
+        # set up variables for group_unjoin testing
+        admin_groups = GroupMembers.query.filter_by(profile_id=3).all()
+        admin_groupids = [group.group_id for group in admin_groups]
+        all_groupids = [group.id for group in (Groups.query.all())]
+        non_groupids = [
+            num for num in all_groupids if num not in admin_groupids]
+        non_admin_groupid, *non_groupids = non_groupids
+
+        self.post_request(url_for("groups.join_group", id=non_admin_groupid))
+        group_check_before = GroupMembers.query.filter_by(
+            profile_id=3, group_id=non_admin_groupid).first()
+
+        # endpoints for unjoin_group tests
+        endpoint1 = url_for("groups.unjoin_group", id=non_admin_groupid)
+        endpoint2 = url_for("groups.unjoin_group", id=admin_groupids[0])
+        endpoint3 = url_for("groups.unjoin_group", id=non_groupids[0])
+
+        # test for valid unjoin(valid group member)
+        response1 = self.post_request(endpoint1)
+        group_check_after = GroupMembers.query.filter_by(
+            profile_id=3, group_id=non_admin_groupid).first()
+
+        self.assertEqual(response1.status_code, 200)
+        self.assertIsNotNone(group_check_before)
+        self.assertIsNone(group_check_after)
+        self.assertIn(b"Unjoined group", response1.data)
+
+        # test for invalid unjoin(group admin)
+        response2 = self.post_request(endpoint2)
+        group_check_after = GroupMembers.query.filter_by(
+            profile_id=3, group_id=admin_groupids[0]).first()
+        self.assertEqual(response2.status_code, 401)
+        self.assertIn(b"Admin cannot unjoin group", response2.data)
+        self.assertIsNotNone(group_check_after)
+        self.assertTrue(group_check_after.admin)
+
+        # test for invalid unjoin(non-group member)
+        group_check_before = GroupMembers.query.filter_by(
+            profile_id=3, group_id=non_groupids[0]).first()
+        response3 = self.post_request(endpoint3)
+        group_check_after = GroupMembers.query.filter_by(
+            profile_id=3, group_id=non_groupids[0]).first()
+
+        self.assertEqual(response3.status_code, 200)
+        self.assertIsNone(group_check_before)
+        self.assertIsNone(group_check_after)
+        self.assertIn(b"Not a member of this group", response3.data)
 
         self.logout()
