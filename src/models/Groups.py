@@ -17,4 +17,4 @@ class Groups(db.Model):
         cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __repr__(self):
-        return f"<Group: {self.name}>"
+        return f"<Group: {self.id}>"

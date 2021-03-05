@@ -165,7 +165,7 @@ def update_group(id):
     form = UpdateGroup()
 
     admin_check = GroupMembers.query.filter_by(
-        group_id=id, profile_id=profile.id).first()
+        group_id=id, profile_id=profile.id, admin=True).first()
     if not admin_check:
         return abort(401, description="Not authorised to update group")
 
