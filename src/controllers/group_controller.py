@@ -35,7 +35,8 @@ def groups_page():
         Profile.id, GroupMembers.admin, Groups.id,
         Groups.name, Groups.description, Location.postcode, Location.suburb,
         Location.state).select_from(Profile).filter_by(
-            id=profile.id).outerjoin(GroupMembers).join(Groups).join(Location)
+            id=profile.id).outerjoin(GroupMembers).join(
+                Groups).join(Location).all()
 
     # Group recommendations section logic. Retrieves and displays groups that
     # is not associated with the current user's profile but has a group

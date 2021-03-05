@@ -1,6 +1,6 @@
 import unittest
 from main import create_app, db
-from flask import template_rendered
+from flask import template_rendered, url_for
 from contextlib import contextmanager
 
 
@@ -48,11 +48,11 @@ class Helpers(unittest.TestCase):
 
     @classmethod
     def login(cls, data):
-        return cls.client.post("/web/login", data=data, follow_redirects=True)
+        return cls.client.post(url_for("auth.login"), data=data, follow_redirects=True)
 
     @classmethod
     def logout(cls):
-        cls.client.get("/web/logout")
+        cls.client.get(url_for("auth.logout"))
 
     @classmethod
     def post_request(cls, endpoint, data=None, content_type=None):
@@ -63,3 +63,7 @@ class Helpers(unittest.TestCase):
     @classmethod
     def get_request(cls, endpoint):
         return cls.client.get(endpoint, follow_redirects=True)
+
+    @classmethod
+    def encode(cls, data, encoding="utf-8"):
+        return data.encode(encoding)

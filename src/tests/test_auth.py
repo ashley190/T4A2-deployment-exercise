@@ -15,7 +15,7 @@ class TestAuth(Helpers):
         # test captured template and form for registration page
         with self.client as c:
             with captured_templates(self.app) as templates:
-                response = c.get("/web/registration")
+                response = c.get(url_for("auth.register"))
                 template, context = templates[0]
 
                 self.assertEqual(response.status_code, 200)
@@ -78,7 +78,7 @@ class TestAuth(Helpers):
         #test captured template and form for login page
         with self.client as c:
             with captured_templates(self.app) as templates:
-                response = c.get('/web/login')
+                response = c.get(url_for("auth.login"))
                 template, context = templates[0]
 
                 self.assertEqual(response.status_code, 200)
