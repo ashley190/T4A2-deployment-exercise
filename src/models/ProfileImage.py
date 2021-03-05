@@ -10,4 +10,4 @@ class ProfileImage(db.Model):
         db.Integer, db.ForeignKey("profile.id"), nullable=False)
 
     def __repr__(self):
-        return f"<BookImage {self.id}>"
+        return f"BookImage: {self.id}"
