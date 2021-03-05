@@ -303,11 +303,11 @@ def delete_group(id):
 
     if form.validate_on_submit():
         admin = GroupMembers.query.filter_by(
-            group_id=id, profile_id=profile.id).first()
+            group_id=id, profile_id=profile.id, admin=True).first()
 
-        if not admin.admin:
-            flash("Not authorised to delete group")
-        elif admin.admin:
+        if not admin:
+            return abort(401, description="Unauthorised to delete group")
+        elif admin:
             for member in group_members:
                 db.session.delete(member)
             db.session.delete(location)

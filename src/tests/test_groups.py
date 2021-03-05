@@ -490,3 +490,55 @@ class TestGroups(Helpers):
         self.assertIn(b"Not a member of this group", response3.data)
 
         self.logout()
+
+    def test_delete_group(self):
+        """Tests delete group logic"""
+
+        # login as valid user
+        data = {
+            "username": "tester2",
+            "password": "123456"
+        }
+        self.login(data)
+
+        # set up variables for group_unjoin testing
+        admin_groups = GroupMembers.query.filter_by(profile_id=2).all()
+        admin_groupids = [group.group_id for group in admin_groups]
+        all_groupids = [group.id for group in (Groups.query.all())]
+        non_groupids = [
+            num for num in all_groupids if num not in admin_groupids]
+        non_admin_groupid, *non_groupids = non_groupids
+
+        self.post_request(url_for("groups.join_group", id=non_admin_groupid))
+
+        # endpoints for delete group tests
+        endpoint1 = url_for("groups.delete_group", id=admin_groupids[0])
+        endpoint2 = url_for("groups.delete_group", id=non_admin_groupid)
+        endpoint3 = url_for("groups.delete_group", id=non_groupids[0])
+
+        # test for valid delete group operation by group admin
+        group_check_before = Groups.query.get(admin_groupids[0])
+        response1 = self.post_request(endpoint1)
+        group_check_after = Groups.query.get(admin_groupids[0])
+
+        self.assertEqual(response1.status_code, 200)
+        self.assertIn(b"Group deleted", response1.data)
+        self.assertIsNotNone(group_check_before)
+        self.assertIsNone(group_check_after)
+
+        # test for invalid delete group operation (member but not admin)
+        response2 = self.post_request(endpoint2)
+        group_check_after = Groups.query.get(non_admin_groupid)
+
+        self.assertEqual(response2.status_code, 401)
+        self.assertIn(b"Unauthorised to delete group", response2.data)
+        self.assertIsNotNone(group_check_after)
+
+        response3 = self.post_request(endpoint3)
+        group_check_after = Groups.query.get(non_groupids[0])
+
+        self.assertEqual(response3.status_code, 401)
+        self.assertIn(b"Unauthorised to delete group", response3.data)
+        self.assertIsNotNone(group_check_after)
+
+        self.logout()
