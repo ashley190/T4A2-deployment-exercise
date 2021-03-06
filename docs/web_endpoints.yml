@@ -255,7 +255,7 @@ paths:
       get:
         tags:
         - "groups"
-        summary: "View group by id"
+        summary: "View group details, posts and comments"
         parameters:
           - name: "group_id"
             in: "path"
@@ -479,20 +479,7 @@ paths:
             description: "successful operation"
           "302":
             description: "Redirect depending on outcome"
-    /posts/{group_id}:
-      get:
-        tags:
-        - "posts"
-        summary: "Get group posts"
-        parameters:
-          - name: "group_id"
-            in: "path"
-            required: true
-            type: "integer"
-        responses:
-          "200":
-            description: "successful operation"
-    /posts/{group_id}/create/:
+    /web/posts/{group_id}/create/:
       get:
         tags:
         - "posts"
@@ -527,19 +514,7 @@ paths:
             description: "Redirect depending on outcome"
           "401":
             description: "Unauthorised to create post"
-    /posts/{post_id}/comment/:
-      get:
-        tags:
-        - "posts"
-        summary: "View comments"
-        parameters:
-          - name: "post_id"
-            in: "path"
-            required: true
-            type: "integer"
-        responses:
-          "200":
-            description: "successful operation"
+    /web/posts/{post_id}/comment/:
       post:
         tags:
         - "posts"
@@ -562,7 +537,7 @@ paths:
             description: "Redirect depending on outcome"
           "401":
             description: "Unauthorised to comment"
-    /posts/{post_id}/update/:
+    /web/posts/{post_id}/update/:
       get:
         tags:
         - "posts"
