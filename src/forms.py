@@ -154,3 +154,36 @@ class SearchForm(FlaskForm):
     )
 
     submit = SubmitField("Search")
+
+
+class CreatePost(FlaskForm):
+    post = TextAreaField(
+        "New Post",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Add Post")
+
+
+class Comment(FlaskForm):
+    comment = TextAreaField(
+        "Comment",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Add Comment")
+
+
+class UpdatePost(FlaskForm):
+    post = TextAreaField(
+        "Update Post",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Update Post")

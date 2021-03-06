@@ -1,7 +1,10 @@
 from models.Profile import Profile
+from models.ProfileImage import ProfileImage
 from models.Groups import Groups
 from models.Locations import Location
 from models.Group_members import GroupMembers
+from models.Posts import Posts
+from models.Comments import Comments
 from schemas.GroupSchema import group_schema
 from schemas.LocationSchema import location_schema
 from controllers.controller_helpers import Helpers
@@ -13,7 +16,7 @@ from forms import (
     CreateGroup, SearchLocation, UpdateGroup, UpdateButton, JoinButton,
     UnjoinButton, DeleteButton, SearchForm)
 import json
-from sqlalchemy import or_
+from sqlalchemy import or_, desc
 
 groups = Blueprint("groups", __name__, url_prefix="/web/groups")
 
@@ -141,15 +144,40 @@ def group_details(id):
     """
     Group Details page
     """
+    user_id, profile = Helpers.retrieve_profile()
+    form = DeleteButton()
+
     group = Groups.query.with_entities(
         Groups.name, Groups.description, Location.postcode, Location.suburb,
         Location.state).filter_by(id=id).join(Location).first()
     group_name = group.name
     group_description = group.description
     group_location = f"{group.suburb}, {group.state}"
+
+    posts = Posts.query.with_entities(
+        Posts.id, Profile.name, Posts.post, Posts.profile_id,
+        ProfileImage).select_from(Posts).join(Profile).join(
+            ProfileImage).filter(Posts.group_id == id).order_by(
+                desc(Posts.date)).all()
+    data = []
+    for post in posts:
+        image = Helpers.retrieve_profile_picture(post[4])
+
+        post_comments = Comments.query.with_entities(
+            Comments.id, Comments.comment, Profile.name,
+            ProfileImage).select_from(Comments).join(Profile).join(
+                ProfileImage).filter(Comments.post_id == post.id).order_by(
+                    desc(Comments.date)).all()
+        comments_data = []
+        for comment in post_comments:
+            comment_img = Helpers.retrieve_profile_picture(comment[3])
+            comments_data.append((comment, comment_img))
+        data.append((post, image, comments_data))
+
     return render_template(
         "group_detail.html", group_name=group_name,
-        group_description=group_description, group_location=group_location)
+        group_description=group_description, group_location=group_location,
+        id=id, data=data, profile_id=profile.id, form=form)
 
 
 @groups.route("/<int:id>/update", methods=["GET", "POST"])

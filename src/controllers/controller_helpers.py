@@ -24,7 +24,7 @@ class Helpers():
         bucket = os.environ.get("AWS_S3_BUCKET")
         url = s3.generate_presigned_url('get_object', Params={
             "Bucket": bucket,
-            "Key": f"profile_images/{profile_image.filename}"}, ExpiresIn=5)
+            "Key": f"profile_images/{profile_image.filename}"}, ExpiresIn=1800)
         return url
 
     @classmethod

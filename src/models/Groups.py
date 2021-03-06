@@ -1,6 +1,6 @@
 from main import db
 from models.Locations import Location
-# from models.Group_members import GroupMembers
+from models.Posts import Posts
 
 
 class Groups(db.Model):
@@ -15,6 +15,9 @@ class Groups(db.Model):
     members = db.relationship(
         "GroupMembers", backref="groups",
         cascade="all, delete, delete-orphan", passive_deletes=True)
+    posts = db.relationship(
+        Posts, backref="group", lazy="dynamic",
+        cascade="all, delete, delete-orphan", passive_deletes=True)
 
     def __repr__(self):
-        return f"<Group: {self.id}>"
+        return f"Group: {self.id}"

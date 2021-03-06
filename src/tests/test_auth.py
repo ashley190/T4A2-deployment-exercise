@@ -73,7 +73,7 @@ class TestAuth(Helpers):
         self.assertIn(b"Password must match.", response4.data)
 
     def test_login(self):
-        """Test  rendering of login page as well as login logic"""
+        """Test rendering of login page as well as login logic"""
 
         # test captured template and form for login page
         with self.client as c:

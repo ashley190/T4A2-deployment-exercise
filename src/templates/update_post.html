@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form method="POST" action="{{ url_for('posts.update_post', id=id) }}">
+    {{ form.csrf_token }}
+
+    <fieldset class="form-field">
+        {{ form.post.label }}
+        {{ form.post() }}
+    </fieldset>
+
+    {{ form.submit }}
+{% endblock %}
