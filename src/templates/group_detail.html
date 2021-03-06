@@ -5,8 +5,8 @@
 <h2>Location: {{ group_location }}</h2>
 <p>{{ group_description }}</p>
 
-<h2>Posts</h2>
 {% if data %}
+<h2>Posts</h2>
 <table>
     <thead>
         <th>img</th>
@@ -57,6 +57,6 @@
         </tbody>
 </table>
 {% endif %}
-
+<a href="{{ url_for('posts.create_group_posts', id=id) }}">Add post</a>
 
 {% endblock %}

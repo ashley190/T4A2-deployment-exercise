@@ -16,6 +16,13 @@ posts = Blueprint("posts", __name__, url_prefix="/web/posts")
 @posts.route("/<int:id>/create", methods=["GET", "POST"])
 @login_required
 def create_group_posts(id):
+    """
+    Page for creating new posts
+
+    GET requests renders post creation page
+    POST requests handles form validation for post creation
+    and post creation logic.
+    """
     user_id, profile = Helpers.retrieve_profile()
     group = Groups.query.get(id)
     member = GroupMembers.query.filter_by(
@@ -41,6 +48,13 @@ def create_group_posts(id):
 @posts.route("/<int:id>/comment", methods=["GET", "POST"])
 @login_required
 def post_comment(id):
+    """
+    Page for adding comments to a post.
+
+    GET requests renders comment creation page with relevant form
+    POST requets handles form validation and addition of comment
+    to post as specified by id.
+    """
     user_id, profile = Helpers.retrieve_profile()
     post = Posts.query.get(id)
     member = GroupMembers.query.filter_by(
@@ -66,6 +80,12 @@ def post_comment(id):
 @posts.route("/<int:id>/update", methods=["GET", "POST"])
 @login_required
 def update_post(id):
+    """
+    Post update page
+
+    GET requests renders page with post update form
+    POST requests handles form validation and post update logic.
+    """
     user_id, profile = Helpers.retrieve_profile()
     post = Posts.query.filter_by(id=id)
     form = UpdatePost()
@@ -90,6 +110,9 @@ def update_post(id):
 @posts.route("/<int:id>/remove", methods=["POST"])
 @login_required
 def remove_post(id):
+    """
+    Handles post deletion logic. Can only be performed by original poster.
+    """
     user_id, profile = Helpers.retrieve_profile()
     form = DeleteButton()
     post = Posts.query.filter_by(id=id).first()

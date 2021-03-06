@@ -152,7 +152,7 @@ class TestGroups(Helpers):
     def test_group_details(self):
         """Tests rendering of group details page"""
         data = {
-            "username": "tester4",
+            "username": "tester1",
             "password": "123456"
         }
 
@@ -167,7 +167,8 @@ class TestGroups(Helpers):
         for group in all_groups:
             with self.client as c:
                 with captured_templates(self.app) as templates:
-                    c.get(url_for("groups.group_details", id=group.id))
+                    response = c.get(url_for(
+                        "groups.group_details", id=group.id))
                     template, context = templates[0]
 
                     self.assertEqual(template.name, "group_detail.html")
@@ -177,6 +178,40 @@ class TestGroups(Helpers):
                     self.assertEqual(
                         f"{group.suburb}, {group.state}", context[
                             "group_location"])
+                    self.assertEqual(response.status_code, 200)
+
+        # test captured template and context for group with post and comment
+        with self.client as c:
+            with captured_templates(self.app) as templates:
+                response = c.get(url_for("groups.group_details", id=1))
+                template, context = templates[0]
+
+                self.assertIsInstance(context["data"][0][0], tuple)
+                self.assertEqual(len(context["data"][0][0]), 5)
+                self.assertIsInstance(context["data"][0][2], list)
+                self.assertEqual(len(context["data"][0][2][0]), 2)
+                self.assertIn(b"Posts", response.data)
+                self.assertIn(b"Update Post", response.data)
+
+        # test captured template and context for group with no posts
+        with self.client as c:
+            with captured_templates(self.app) as templates:
+                response = c.get(url_for("groups.group_details", id=2))
+                template, context = templates[0]
+
+                self.assertEqual(len(context["data"]), 0)
+                self.assertNotIn(b"Posts", response.data)
+                self.assertNotIn(b"Update Post", response.data)
+
+        # test captured template and context for group with post but no comment
+        with self.client as c:
+            with captured_templates(self.app) as templates:
+                response = c.get(url_for("groups.group_details", id=3))
+                template, context = templates[0]
+
+                self.assertEqual(len(context["data"][0][0]), 5)
+                self.assertEqual(len(context["data"][0][2]), 0)
+                self.assertNotIn(b"Update Post", response.data)
 
         self.logout()
 
@@ -491,58 +526,6 @@ class TestGroups(Helpers):
 
         self.logout()
 
-    def test_delete_group(self):
-        """Tests delete group logic"""
-
-        # login as valid user
-        data = {
-            "username": "tester2",
-            "password": "123456"
-        }
-        self.login(data)
-
-        # set up variables for group_unjoin testing
-        admin_groups = GroupMembers.query.filter_by(profile_id=2).all()
-        admin_groupids = [group.group_id for group in admin_groups]
-        all_groupids = [group.id for group in (Groups.query.all())]
-        non_groupids = [
-            num for num in all_groupids if num not in admin_groupids]
-        non_admin_groupid, *non_groupids = non_groupids
-
-        self.post_request(url_for("groups.join_group", id=non_admin_groupid))
-
-        # endpoints for delete group tests
-        endpoint1 = url_for("groups.delete_group", id=admin_groupids[0])
-        endpoint2 = url_for("groups.delete_group", id=non_admin_groupid)
-        endpoint3 = url_for("groups.delete_group", id=non_groupids[0])
-
-        # test for valid delete group operation by group admin
-        group_check_before = Groups.query.get(admin_groupids[0])
-        response1 = self.post_request(endpoint1)
-        group_check_after = Groups.query.get(admin_groupids[0])
-
-        self.assertEqual(response1.status_code, 200)
-        self.assertIn(b"Group deleted", response1.data)
-        self.assertIsNotNone(group_check_before)
-        self.assertIsNone(group_check_after)
-
-        # test for invalid delete group operation (member but not admin)
-        response2 = self.post_request(endpoint2)
-        group_check_after = Groups.query.get(non_admin_groupid)
-
-        self.assertEqual(response2.status_code, 401)
-        self.assertIn(b"Unauthorised to delete group", response2.data)
-        self.assertIsNotNone(group_check_after)
-
-        response3 = self.post_request(endpoint3)
-        group_check_after = Groups.query.get(non_groupids[0])
-
-        self.assertEqual(response3.status_code, 401)
-        self.assertIn(b"Unauthorised to delete group", response3.data)
-        self.assertIsNotNone(group_check_after)
-
-        self.logout()
-
     def test_search_group(self):
         """Tests group search functionality"""
 
@@ -623,5 +606,65 @@ class TestGroups(Helpers):
                     self.assertIn(b"Group search results", response.data)
                     self.assertIn(self.encode(
                         f"{data2['keyword']}"), response.data)
+
+        self.logout()
+
+
+class TestDeleteGroup(Helpers):
+    """
+    Unittest for delete group for separate testing context.
+    This prevents delete group from intefering with other tests
+    for the groups page.
+    """
+
+    def test_delete_group(self):
+        """Tests delete group logic"""
+
+        # login as valid user
+        data = {
+            "username": "tester2",
+            "password": "123456"
+        }
+        self.login(data)
+
+        # set up variables for group_unjoin testing
+        admin_groups = GroupMembers.query.filter_by(profile_id=2).all()
+        admin_groupids = [group.group_id for group in admin_groups]
+        all_groupids = [group.id for group in (Groups.query.all())]
+        non_groupids = [
+            num for num in all_groupids if num not in admin_groupids]
+        non_admin_groupid, *non_groupids = non_groupids
+
+        self.post_request(url_for("groups.join_group", id=non_admin_groupid))
+
+        # endpoints for delete group tests
+        endpoint1 = url_for("groups.delete_group", id=admin_groupids[0])
+        endpoint2 = url_for("groups.delete_group", id=non_admin_groupid)
+        endpoint3 = url_for("groups.delete_group", id=non_groupids[0])
+
+        # test for valid delete group operation by group admin
+        group_check_before = Groups.query.get(admin_groupids[0])
+        response1 = self.post_request(endpoint1)
+        group_check_after = Groups.query.get(admin_groupids[0])
+
+        self.assertEqual(response1.status_code, 200)
+        self.assertIn(b"Group deleted", response1.data)
+        self.assertIsNotNone(group_check_before)
+        self.assertIsNone(group_check_after)
+
+        # test for invalid delete group operation (member but not admin)
+        response2 = self.post_request(endpoint2)
+        group_check_after = Groups.query.get(non_admin_groupid)
+
+        self.assertEqual(response2.status_code, 401)
+        self.assertIn(b"Unauthorised to delete group", response2.data)
+        self.assertIsNotNone(group_check_after)
+
+        response3 = self.post_request(endpoint3)
+        group_check_after = Groups.query.get(non_groupids[0])
+
+        self.assertEqual(response3.status_code, 401)
+        self.assertIn(b"Unauthorised to delete group", response3.data)
+        self.assertIsNotNone(group_check_after)
 
         self.logout()
