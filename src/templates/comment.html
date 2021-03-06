@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Comment</h2>
+<form method="POST" action="{{ url_for('posts.post_comment', id=id) }}">
+    {{ form.csrf_token }}
+
+    <fieldset class="form-field">
+        {{ form.comment.label }}
+        {{ form.comment() }}
+    </fieldset>
+
+    {{ form.submit }}
+</form>
+
+{% endblock %}

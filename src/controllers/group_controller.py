@@ -4,6 +4,7 @@ from models.Groups import Groups
 from models.Locations import Location
 from models.Group_members import GroupMembers
 from models.Posts import Posts
+from models.Comments import Comments
 from schemas.GroupSchema import group_schema
 from schemas.LocationSchema import location_schema
 from controllers.controller_helpers import Helpers
@@ -153,14 +154,24 @@ def group_details(id):
     group_location = f"{group.suburb}, {group.state}"
 
     posts = Posts.query.with_entities(
-        Profile.name, Posts.post, ProfileImage).select_from(
-            Posts).join(Profile).join(ProfileImage).filter(
-                Posts.group_id == id).order_by(desc(Posts.date)).all()
+        Posts.id, Profile.name, Posts.post, Posts.profile_id,
+        ProfileImage).select_from(Posts).join(Profile).join(
+            ProfileImage).filter(Posts.group_id == id).order_by(
+                desc(Posts.date)).all()
     data = []
     for post in posts:
-        image = Helpers.retrieve_profile_picture(post[2])
-        data.append((post, image))
-    print(data)
+        image = Helpers.retrieve_profile_picture(post[4])
+
+        post_comments = Comments.query.with_entities(
+            Comments.id, Comments.comment, Profile.name,
+            ProfileImage).select_from(Comments).join(Profile).join(
+                ProfileImage).filter(Comments.post_id == post.id).order_by(
+                    desc(Comments.date)).all()
+        comments_data = []
+        for comment in post_comments:
+            comment_img = Helpers.retrieve_profile_picture(comment[3])
+            comments_data.append((comment, comment_img))
+        data.append((post, image, comments_data))
 
     return render_template(
         "group_detail.html", group_name=group_name,

@@ -9,7 +9,8 @@ class Comments(db.Model):
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     comment = db.Column(db.Text, nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=True)
+    profile_id = db.Column(
+        db.Integer, db.ForeignKey("profile.id"), nullable=True)
 
-
-def __repr__(self):
-    return f"Comment: {self.id}"
+    def __repr__(self):
+        return f"Comment: {self.id}"

@@ -165,3 +165,14 @@ class CreatePost(FlaskForm):
     )
 
     submit = SubmitField("Add Post")
+
+
+class Comment(FlaskForm):
+    comment = TextAreaField(
+        "Comment",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Add Comment")
