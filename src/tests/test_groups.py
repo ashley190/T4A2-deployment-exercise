@@ -614,7 +614,7 @@ class TestDeleteGroup(Helpers):
     """
     Unittest for delete group for separate testing context.
     This prevents delete group from intefering with other tests
-    for the groups page by running in a different testing context.
+    for the groups page.
     """
 
     def test_delete_group(self):
