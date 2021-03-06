@@ -154,3 +154,14 @@ class SearchForm(FlaskForm):
     )
 
     submit = SubmitField("Search")
+
+
+class CreatePost(FlaskForm):
+    post = TextAreaField(
+        "New Post",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Add Post")

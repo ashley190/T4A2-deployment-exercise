@@ -6,4 +6,19 @@
 <p>{{ group_description }}</p>
 
 <h2>Posts</h2>
+{% if data %}
+{% for item in data %}
+    <div>
+        {% if not item[1] %}
+        <img src="{{ url_for('static', filename='default.png') }}"/>
+        {% else %}
+        <img src="{{ item[1] }}"/>
+        {% endif %}
+        {{ item[0].name }}
+        {{ item[0].post }}   
+    </div>
+{% endfor %}
+{% endif %}
+<a href="{{ url_for('posts.create_group_posts', id=id) }}">Create Post</a>
+
 {% endblock %}
