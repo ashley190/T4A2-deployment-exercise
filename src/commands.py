@@ -8,16 +8,12 @@ db_commands = Blueprint("db-custom", __name__)
 def retrieve_suburb():
     """Retrieve suburb from Postcode API from randomly generated
     postcode by Faker"""
-    import requests
-    import json
+    from controllers.controller_helpers import Helpers
     from faker import Faker
     faker = Faker(["en_AU"])
 
     postcode = faker.postcode()
-    url = f"http://v0.postcodeapi.com.au/suburbs/{postcode}.json"
-    response = requests.get(url)
-    data = json.loads(response.text)
-    return data
+    return Helpers.location_search(postcode)
 
 
 def seed_location(locations):
@@ -55,6 +51,8 @@ def seed_db():
     from models.Locations import Location
     from models.Groups import Groups
     from models.Group_members import GroupMembers
+    from models.Posts import Posts
+    from models.Comments import Comments
     from faker import Faker
     import random
 
@@ -152,6 +150,44 @@ def seed_db():
             add_location.profile_id = profile.id
             profile.locations.append(add_location)
             db.session.add(add_location)
+    db.session.commit()
+
+    # seed non admin group members for each group
+    profile_ids = (4, 3, 2, 1)
+    group_ids = [1, 2, 3, 4, 5, 6, 7, 8]
+    for num in profile_ids:
+        for i in range(1, 3):
+            profile = Profile.query.get(num)
+            group_id = group_ids.pop(0)
+            new_member = GroupMembers()
+            new_member.profile_id = num
+            new_member.group_id = group_id
+            new_member.admin = False
+            profile.groups.append(new_member)
+    db.session.commit()
+
+    # seed 1 post each in groups 1 and 3
+    ids = [1, 3]
+    for num in ids:
+        profile = Profile.query.get(num)
+        group = Groups.query.get(num)
+        new_post = Posts()
+        new_post.post = faker.sentence()
+        new_post.profile_id = num
+        new_post.group_id = num
+        profile.posts.append(new_post)
+        group.posts.append(new_post)
+    db.session.commit()
+
+    # seed comment for post 1
+    post = Posts.query.get(1)
+    profile = Profile.query.get(4)
+    new_comment = Comments()
+    new_comment.comment = faker.sentence()
+    new_comment.post_id = post.id
+    new_comment.profile_id = profile.id
+    post.comments.append(new_comment)
+    profile.comments.append(new_comment)
     db.session.commit()
 
     print("Test database seeded")

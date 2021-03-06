@@ -142,7 +142,7 @@ def create_group():
 @login_required
 def group_details(id):
     """
-    Group Details page
+    Group Details page displaying group details, posts and comments
     """
     user_id, profile = Helpers.retrieve_profile()
     form = DeleteButton()
