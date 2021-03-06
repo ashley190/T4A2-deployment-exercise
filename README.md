@@ -28,6 +28,9 @@ This section is a continuation of the project tracking activity from PART A-R6. 
 ![Mar 5](docs/trello_screenshots/210305.png)
 *Mar 5*: Group page testing complete. Content page coding under way.
 
+![Mar 6](docs/trello_screenshots/210306.png)
+*Mar 6*: Backend and template development and testing completed. Moved due date for front end and deployment to allow for a little more time on front end styling.
+
 ## Deployment/Installation steps
 ### Continuous integration/Continuous Deployment(CI/CD)
 
