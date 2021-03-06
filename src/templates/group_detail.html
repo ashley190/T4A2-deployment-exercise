@@ -42,8 +42,10 @@
             <a href="{{ url_for('posts.post_comment', id=item[0].id) }}">Add Comment</a>
             </td>
             <td>
-                <a href="#">Update Post</a>
+                {% if item[0].profile_id == profile_id %}
+                <a href="{{ url_for('posts.update_post', id=item[0].id) }}">Update Post</a>
                 <a href="#">Remove</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

@@ -3,10 +3,12 @@ from models.Posts import Posts
 from models.Comments import Comments
 from models.Groups import Groups
 from models.Group_members import GroupMembers
+from schemas.PostSchema import post_schema
 from controllers.controller_helpers import Helpers
 from flask import Blueprint, render_template, url_for, flash, redirect, abort
 from flask_login import login_required
-from forms import CreatePost, Comment
+from forms import CreatePost, Comment, UpdatePost
+from datetime import datetime
 
 posts = Blueprint("posts", __name__, url_prefix="/web/posts")
 
@@ -61,11 +63,25 @@ def post_comment(id):
     return render_template("comment.html", form=form, id=post.id)
 
 
-@posts.route("/<int:id>/update", methods=["GET, POST"])
+@posts.route("/<int:id>/update", methods=["GET", "POST"])
 @login_required
 def update_post(id):
     user_id, profile = Helpers.retrieve_profile()
-    post = Posts.query.get(id)
+    post = Posts.query.filter_by(id=id)
+    form = UpdatePost()
 
-    if post.profile_id != profile.id:
-        return abort(401, description="Not authorised to update")
+    # if post.profile_id != profile.id:
+    #     return abort(401, description="Not authorised to update")
+    if form.validate_on_submit():
+        data = {
+            "date": str(datetime.now()),
+            "post": form.post.data
+        }
+        fields = post_schema.load(data, partial=True)
+        post.update(fields)
+        db.session.commit()
+        flash("Post updated")
+        return redirect(url_for(
+            "groups.group_details", id=post.first().group_id))
+
+    return render_template("update_post.html", id=id, form=form)

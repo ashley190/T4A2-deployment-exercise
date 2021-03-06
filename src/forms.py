@@ -176,3 +176,14 @@ class Comment(FlaskForm):
     )
 
     submit = SubmitField("Add Comment")
+
+
+class UpdatePost(FlaskForm):
+    post = TextAreaField(
+        "Update Post",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    submit = SubmitField("Update Post")

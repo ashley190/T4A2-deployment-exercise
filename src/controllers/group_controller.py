@@ -176,7 +176,7 @@ def group_details(id):
     return render_template(
         "group_detail.html", group_name=group_name,
         group_description=group_description, group_location=group_location,
-        id=id, data=data)
+        id=id, data=data, profile_id=profile.id)
 
 
 @groups.route("/<int:id>/update", methods=["GET", "POST"])
