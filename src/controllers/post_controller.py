@@ -7,7 +7,7 @@ from schemas.PostSchema import post_schema
 from controllers.controller_helpers import Helpers
 from flask import Blueprint, render_template, url_for, flash, redirect, abort
 from flask_login import login_required
-from forms import CreatePost, Comment, UpdatePost
+from forms import CreatePost, Comment, UpdatePost, DeleteButton
 from datetime import datetime
 
 posts = Blueprint("posts", __name__, url_prefix="/web/posts")
@@ -70,8 +70,8 @@ def update_post(id):
     post = Posts.query.filter_by(id=id)
     form = UpdatePost()
 
-    # if post.profile_id != profile.id:
-    #     return abort(401, description="Not authorised to update")
+    if post.first().profile_id != profile.id:
+        return abort(401, description="Not authorised to update")
     if form.validate_on_submit():
         data = {
             "date": str(datetime.now()),
@@ -85,3 +85,24 @@ def update_post(id):
             "groups.group_details", id=post.first().group_id))
 
     return render_template("update_post.html", id=id, form=form)
+
+
+@posts.route("/<int:id>/remove", methods=["POST"])
+@login_required
+def remove_post(id):
+    user_id, profile = Helpers.retrieve_profile()
+    form = DeleteButton()
+    post = Posts.query.filter_by(id=id).first()
+    comments = Comments.query.filter_by(post_id=post.id).all()
+
+    if form.validate_on_submit():
+        if post.profile_id != profile.id:
+            return abort(401, description="Unauthorised to remove post.")
+        for comment in comments:
+            db.session.delete(comment)
+        db.session.delete(post)
+        db.session.commit()
+        flash("Post removed")
+
+    return redirect(url_for(
+        "groups.group_details", id=post.group_id))

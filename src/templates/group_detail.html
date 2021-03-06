@@ -44,7 +44,12 @@
             <td>
                 {% if item[0].profile_id == profile_id %}
                 <a href="{{ url_for('posts.update_post', id=item[0].id) }}">Update Post</a>
-                <a href="#">Remove</a>
+                <button>
+                    <form method="POST" action="{{ url_for('posts.remove_post', id=item[0].id) }}">
+                        {{ form.csrf_token }}
+                        {{ form.submit }}
+                    </form>
+                </button>
                 {% endif %}
             </td>
         </tr>

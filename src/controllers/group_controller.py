@@ -145,6 +145,7 @@ def group_details(id):
     Group Details page
     """
     user_id, profile = Helpers.retrieve_profile()
+    form = DeleteButton()
 
     group = Groups.query.with_entities(
         Groups.name, Groups.description, Location.postcode, Location.suburb,
@@ -176,7 +177,7 @@ def group_details(id):
     return render_template(
         "group_detail.html", group_name=group_name,
         group_description=group_description, group_location=group_location,
-        id=id, data=data, profile_id=profile.id)
+        id=id, data=data, profile_id=profile.id, form=form)
 
 
 @groups.route("/<int:id>/update", methods=["GET", "POST"])
