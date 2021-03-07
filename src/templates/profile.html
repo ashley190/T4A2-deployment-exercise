@@ -2,30 +2,38 @@
 
 {% block content %}
 
-<h1>{{ profile.name }}</h1>
-
-{% if not image %}
-    <a href="{{ url_for('profile.profile_image') }}"><img src="{{ url_for('static', filename='default.png') }}" /></a>
-{% elif image %}
-    <a href="{{ url_for('profile.profile_image') }}"><img src="{{ image }}" /></a>
-{% endif %}
-
-<h2>Neighbourhoods</h2>
-{% if locations %}
-<table>
-    <thead>
-        <th>Postcode</th>
-        <th>Suburb</th>
-        <th>State</th>
-    </thead>
-    {% for location in locations %} 
-    <tr>
-        <td>{{ location.postcode }}</td>
-        <td>{{ location.suburb }}</td>
-        <td>{{ location.state }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
-<a href="{{ url_for('profile.profile_locations') }}">Add Location</a>
+<div class="profile">
+    {% if not image %}
+    <a href="{{ url_for('profile.profile_image') }}"><img class="profile-photo" src="{{ url_for('static', filename='assets/img/default.png') }}" /></a>
+    {% elif image %}
+    <a href="{{ url_for('profile.profile_image') }}"><img class="profile-photo" src="{{ image }}" /></a>
+    {% endif %}
+    <h1 class="profile-name">{{ profile.name }}</h1>
+</div>
+<div class="profile-location">
+    <h3>My Neighborhoods</h3>
+    {% if locations %}
+    <div class="table-responsive location-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Postcode</th>
+                    <th>Suburb</th>
+                    <th>State</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for location in locations %} 
+                <tr>
+                    <td>{{ location.postcode }}</td>
+                    <td>{{ location.suburb }}</td>
+                    <td>{{ location.state }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    <a class="btn btn-primary add-location" role="button" href="{{ url_for('profile.profile_locations') }}">Add Location</a>
+</div>
 {% endblock %}

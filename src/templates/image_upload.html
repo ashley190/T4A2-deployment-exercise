@@ -1,19 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Upload your profile picture</h1>
-<form method="POST" enctype="multipart/form-data" action="{{ url_for('profile.profile_image') }}">
+<div class="add-name">
+
+    <div class="form-group">
+        <div class="col-sm-10">
+            <form class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ url_for('profile.profile_image') }}">
+                {{ form.csrf_token }}
+                {{ form.image(class="form-control-file") }}
+                {{ form.submit(class="btn btn-primary upload-photo") }}
+            </form>
+            <form method="POST" action="{{ url_for('profile.remove_image') }}" >
+                {{ delete.csrf_token }}
+                {{ delete.submit(class="btn btn-primary upload-photo") }}
+            </form>        
+        </div>
+    </div>
+</div>
+
+
+<!-- <h1>Upload your profile picture</h1>
+<form class="form-horizontal" method="POST" enctype="multipart/form-data" action="{{ url_for('profile.profile_image') }}">
     {{ form.csrf_token }}
 
-    <fieldset class="form-field">
-        {{ form.image() }}
-    </fieldset>
+    <div class="form-field">
+        {{ form.image(class="form-control-file") }}
+    </div>
 
-    {{ form.submit }}
+    {{ form.submit(class="btn btn-primary upload-photo") }}
 </form>
 <form method="POST" action="{{ url_for('profile.remove_image') }}" >
     {{ delete.csrf_token }}
-    {{ delete.submit }}
+    {{ delete.submit(class="btn btn-primary upload-photo") }}
 
 </form>
-{% endblock %}
+{% endblock %} -->
