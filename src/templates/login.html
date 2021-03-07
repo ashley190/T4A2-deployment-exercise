@@ -8,7 +8,7 @@
 
             <h2 class="sr-only">Login Form</h2>
             <div class="illustration">
-                <h1 id="name" style="color: var(--cyan);font-size: 46px;text-align: center;">MyLocale</h1>
+                <h1 id="name">MyLocale</h1>
                 <img src="{{ url_for('static', filename='assets/img/icon.png') }}">
             </div>
             <div class="form-group">
@@ -41,8 +41,5 @@
             <p class="register">Don't have an account?</p><a class="register-link" href="{{ url_for('auth.register') }}">Register</a>
         </form>    
     </section>
-
-
-
 
 {% endblock %}
