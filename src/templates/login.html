@@ -2,43 +2,46 @@
 
 {% block content %}
 
-    <h2>User Login</h2>
-    <form method="POST" action="{{ url_for('auth.login') }}">
-        {{ form.csrf_token }}
+    <section class="login-clean">
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            {{ form.csrf_token }}
 
-        <fieldset class="username">
-            {{ form.username.label }}
-            {{ form.username(placeholder="Your Username") }}
-            {% if form.username.errors %}
-                <ul class="errors">
-                    {% for error in form.username.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </fieldset>
+            <h2 class="sr-only">Login Form</h2>
+            <div class="illustration">
+                <h1 id="name" style="color: var(--cyan);font-size: 46px;text-align: center;">MyLocale</h1>
+                <img src="{{ url_for('static', filename='assets/img/icon.png') }}">
+            </div>
+            <div class="form-group">
+                <!-- {{ form.username.label }} -->
+                {{ form.username(class="form-control", placeholder="Username") }}
+                {% if form.username.errors %}
+                    <ul class="errors">
+                        {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+    
+            <div class="form-group">
+                <!-- {{ form.password.label }} -->
+                {{ form.password(class="form-control", placeholder="Password") }}
+                {% if form.password.errors %}
+                    <ul class="errors">
+                        {% for error in form.password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+    
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </div>
+            <p class="register">Don't have an account?</p><a class="register-link" href="{{ url_for('auth.register') }}">Register</a>
+        </form>    
+    </section>
 
-        <fieldset class="password">
-            {{ form.password.label }}
-            {{ form.password }}
-            {% if form.password.errors %}
-                <ul class="errors">
-                    {% for error in form.password.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </fieldset>
-
-        <div class="submit-button">
-            {{ form.submit }}
-        </div>
-    </form>
-
-    <div class="login-signup">
-        <span>Don't have an account?</span>
-        <a href="{{ url_for('auth.register') }}">Register</a>
-    </div>
 
 
 
