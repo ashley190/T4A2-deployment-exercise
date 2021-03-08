@@ -191,7 +191,6 @@ class TestGroups(Helpers):
                 self.assertIsInstance(context["data"][0][2], list)
                 self.assertEqual(len(context["data"][0][2][0]), 2)
                 self.assertIn(b"Posts", response.data)
-                self.assertIn(b"Update Post", response.data)
 
         # test captured template and context for group with no posts
         with self.client as c:
@@ -586,7 +585,6 @@ class TestGroups(Helpers):
                     self.assertIn(data1["keyword"], result[1])
                     self.assertIn(data1["keyword"], result[2])
                     self.assertNotIn(result[0], groups)
-                    self.assertIn(b"Group search results", response.data)
                     self.assertIn(self.encode(
                         f"{data1['keyword']}"), response.data)
 
@@ -603,7 +601,6 @@ class TestGroups(Helpers):
                 for result in context["groups"]:
                     self.assertEqual(data2["keyword"], result[3])
                     self.assertNotIn(result[0], groups)
-                    self.assertIn(b"Group search results", response.data)
                     self.assertIn(self.encode(
                         f"{data2['keyword']}"), response.data)
 
