@@ -1,41 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Add Profile Location</h1>
-<form method="POST" action="{{ url_for('profile.profile_locations') }}">
-    {{ form.csrf_token }}
+<div class="add-name">
+    <form class="form-horizontal" method="POST" action="{{ url_for('profile.profile_locations') }}">
+        {{ form.csrf_token }}
 
-    <fieldset class="form-field">
-        {{ form.postcode.label }}
-        {{ form.postcode() }}
-    </fieldset>
-
-    {{ form.submit }}
-</form>
-
+        <div class="form-group">
+            {{ form.postcode.label(class="col-sm-2") }}
+            <div class="col-sm-10">
+                {{ form.postcode(class="form-control") }}
+                {{ form.submit(class="btn btn-primary add-name") }}
+        </div>
+    </form>
+</div>
 {% if data %}
-    <table>
-        <thead>
-            <th>Postcode</th>
-            <th>Suburb</th>
-            <th>State</th>
-            <th></th>
-        </thead>
-        {% for location in data %}
-        <tr>
-            <td>{{ location["postcode"] }}</td>
-            <td>{{ location["name"] }}</td>
-            <td>{{ location["state"]["abbreviation"] }}</td>
-            <td>
-                <button>
-                    <form method="POST" action="{{ url_for('profile.add_location', postcode=location['postcode'], suburb=location['name'], state=location['state']['abbreviation']) }}">
-                        {{ form2.csrf_token }}
-                        {{ form2.submit }}
-                    </form>
-                </button>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div>
+        <div class="table-responsive location-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Postcode</th>
+                        <th>Suburb</th>
+                        <th>State</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for location in data %}
+                    <tr>
+                        <td>{{ location["postcode"] }}</td>
+                        <td>{{ location["name"] }}</td>
+                        <td>{{ location["state"]["abbreviation"] }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('profile.add_location', postcode=location['postcode'], suburb=location['name'], state=location['state']['abbreviation']) }}">
+                                {{ form2.csrf_token }}
+                                {{ form2.submit(class="btn btn-primary add-location") }}
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endif %}
+
 {% endblock %}

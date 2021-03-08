@@ -1,15 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>New Post</h1>
-<form method="POST" action="{{ url_for('posts.create_group_posts', id=id) }}">
-    {{ form.csrf_token }}
+<div class="add-name">
+    <form class="form-horizontal" method="POST" action="{{ url_for('posts.create_group_posts', id=id) }}">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.post.label(class="col-sm-2") }}
+            <div class="col-sm-10">
+                {{ form.post(class="form-control") }}
+                {{ form.submit(class="btn btn-primary gp-update") }}
+            </div>
+        </div>
+    </form>
+</div>
 
-    <fieldset class="form-field">
-        {{ form.post.label }}
-        {{ form.post() }}
-    </fieldset>
-
-    {{ form.submit }}
-</form>
 {% endblock %}

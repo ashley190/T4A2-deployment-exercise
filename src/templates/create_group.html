@@ -1,37 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h2>Create New Group</h2>
 {% if not data %}
-    <form method="POST" action="{{ url_for('groups.create_group') }}">
+<div class="add-name">
+    <form class="form-horizontal" method="POST" action="{{ url_for('groups.create_group') }}">
         {{ form.csrf_token }}
 
-        <fieldset class="form-field">
-            {{ form.postcode.label }}
-            {{ form.postcode()}}
-            {{ form.submit }}
-        </fieldset>
+        <div class="form-group">
+            {{ form.postcode.label(class="col-sm-2") }}
+            <div class="col-sm-10">
+                {{ form.postcode(class="form-control")}}
+            </div>
+            <div class="col-sm-10">
+                {{ form.submit(class="btn btn-primary gp-update") }}
+            </div>
+        </div>
     </form>
+</div>
 {% elif data %}
-    <form method="POST" action="{{ url_for('groups.create_group', locations=form2.group_location, data=data) }}">
+<div class="add-name">
+    <form class="form-horizontal" method="POST" action="{{ url_for('groups.create_group', locations=form2.group_location, data=data) }}">
         {{ form2.csrf_token }}
-
-        <fieldset class="form-field">
-            {{ form2.group_name.label }}
-            {{ form2.group_name() }}
-        </fieldset>
-        <fieldset class="form-field">
-            {{ form2.group_description.label }}
-            {{ form2.group_description() }}
-        </fieldset>
-        <fieldset class="form-field">
-            {% for item in form2.group_location %}
-                {{ item() }}
-                {{ item.label }}
-            {% endfor %}
-        </fieldset>
-        {{ form2.submit }}
+        <div class="form-group">
+            {{ form2.group_name.label(class="col-sm-2") }}
+            <div class="col-sm-10">
+                {{ form2.group_name(class="form-control") }}
+            </div>
+            {{ form2.group_description.label(class="col-sm-2") }}
+            <div class="col-sm-10">
+                {{ form2.group_description(class="form-control") }}
+            </div>
+            <label class="col-sm-2">Location</label>
+            <div class="col-sm-10">
+                {% for item in form2.group_location %}
+                <div class="form-check">
+                    {{ item(class="form-check-input") }}
+                    {{ item.label(class="form-check-label") }}
+                </div>
+                {% endfor %}
+            </div>
+            {{ form2.submit(class="btn btn-primary gp-update") }}
+        </div>
     </form>
+</div>
 {% endif %}
 {% endblock %}

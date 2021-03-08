@@ -1,72 +1,88 @@
 {% extends "base.html" %}
-
 {% block content %}
+
 {% if groups %}
-    <h2>My groups</h2>
-    <table>
-        <thead>
-            <th>Group Name</th>
-            <th>Postcode</th>
-            <th>Location</th>
-        </thead>
-        {% for group in groups %}
-        <tr>
-            <td><a href="{{ url_for('groups.group_details', id=group.id) }}">{{ group.name }}</a></td>
-            <td>{{ group.postcode }}</td>
-            <td>{{ group.suburb }}, {{ group.state }}</td>
-            {% if group.admin %}
-            <td>
-                <a href="{{ url_for('groups.update_group', id=group.id)}}">update</a>
-                <button>
-                    <form method="POST" action="{{ url_for('groups.delete_group', id=group.id) }}">
-                        {{ form3.csrf_token }}
-                        {{ form3.submit }}
-                    </form>
-                </button>
-            </td>
-            {% elif not group.admin %}
-            <td>
-                <button>
-                    <form method="POST" action="{{ url_for('groups.unjoin_group', id=group.id) }}">
-                        {{ form2.csrf_token }}
-                        {{ form2.submit }}
-                    </form>
-                </button>
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-    </table>
+<div class="profile-location">
+    <h3>My Groups</h3>
+    <div class="table-responsive location-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Group</th>
+                    <th>Postcode</th>
+                    <th>Location</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                <tr>
+                    <td><a href="{{ url_for('groups.group_details', id=group.id) }}">{{ group.name }}</a></td>
+                    <td>{{ group.postcode }}</td>
+                    <td>{{ group.suburb }}, {{ group.state }}</td>
+                    {% if group.admin %}
+                    <td class="actions">
+                        <div class="dropdown"><button class="btn btn-light dropdown-toggle" aria-expanded="false" data-toggle="dropdown" type="button">Actions&nbsp;</button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{{ url_for('groups.update_group', id=group.id)}}">Update</a>
+                                <form method="POST" action="{{ url_for('groups.delete_group', id=group.id) }}">
+                                    {{ form3.csrf_token }}
+                                    {{ form3.submit(class="btn btn-primary table-delete") }}
+                                </form>            
+                            </div>
+                        </div>
+                    </td>
+                    {% elif not group.admin %}
+                    <td class="actions">
+                        <form method="POST" action="{{ url_for('groups.unjoin_group', id=group.id) }}">
+                            {{ form2.csrf_token }}
+                            {{ form2.submit(class="btn btn-primary") }}
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endif %}
-<h2>Group recommendations</h2>
-{{ non_member }}
-{{ locations }}
-<table>
-    <thead>
-        <th>Group Name</th>
-        <th>Postcode</th>
-        <th>Location</th>
-    </thead>
-    {% for group in recommendations %}
-    {% if group %}
-    <tr>
-        <td>{{ group.name }}</td>
-        <td>{{ group.postcode }}</td>
-        <td>{{ group.suburb }}, {{ group.state }}</td>
-        <td>
-            <button>
-                <form method="POST" action="{{ url_for('groups.join_group', id=group.id) }}">
-                    {{ form.csrf_token }}
-                    {{ form.submit }}
-                </form>
-            </button>
-        </td>
-    </tr>
-    {% endif %}
-    {% endfor %}
-</table>
 
+<div class="profile-location">
+    <h3>Recommendations</h3>
+    <div class="table-responsive location-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Group</th>
+                    <th>Postcode</th>
+                    <th>Location</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for group in recommendations %}
+            {% if group %}            
+                <tr>
+                    <td><a href="{{ url_for('groups.group_details', id=group.id) }}">{{ group.name }}</a></td>
+                    <td>{{ group.postcode }}</td>
+                    <td>{{ group.suburb }}, {{ group.state }}</td>
+                    <td class="actions">
+                        <form method="POST" action="{{ url_for('groups.join_group', id=group.id) }}">
+                            {{ form.csrf_token }}
+                            {{ form.submit(class="btn btn-primary") }}
+                        </form>                
+                    </td>
+                </tr>
+            {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="group-options">
+        <a class="btn btn-primary options-button" role="button" href="{{ url_for('groups.create_group') }}">Create New Group</a>
+        <a class="btn btn-primary options-button" role="button" href="{{ url_for('groups.search_group') }}">Search Group</a>
+    </div>
+</div>
 
-<a href="{{ url_for('groups.create_group') }}">Create new group</a>
-<a href="{{ url_for('groups.search_group') }}">Search group</a>
 {% endblock %}
