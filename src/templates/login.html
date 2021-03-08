@@ -12,7 +12,6 @@
                 <img src="{{ url_for('static', filename='assets/img/icon.png') }}">
             </div>
             <div class="form-group">
-                <!-- {{ form.username.label }} -->
                 {{ form.username(class="form-control", placeholder="Username") }}
                 {% if form.username.errors %}
                     <ul class="errors">
@@ -24,7 +23,6 @@
             </div>
     
             <div class="form-group">
-                <!-- {{ form.password.label }} -->
                 {{ form.password(class="form-control", placeholder="Password") }}
                 {% if form.password.errors %}
                     <ul class="errors">

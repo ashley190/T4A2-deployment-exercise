@@ -4,15 +4,11 @@
 <div class="add-name">
     <form class="form-horizontal" method="POST" action="{{ url_for('posts.update_post', id=id) }}">
         {{ form.csrf_token }}
-    <!-- <form class="form-horizontal"> -->
         <div class="form-group">
             {{ form.post.label(class="col-sm-2") }}
-            <!-- <label class="col-sm-2">Edit post</label> -->
             <div class="col-sm-10">
                 {{ form.post(class="form-control") }}
-                <!-- <textarea class="form-control"></textarea> -->
                 {{ form.submit(class="btn btn-primary gp-update") }}
-                <!-- <button class="btn btn-primary gp-update" type="button">Update post</button> -->
             </div>
         </div>
     </form>
