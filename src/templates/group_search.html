@@ -1,47 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Search Group</h1>
-<form method="POST" action="{{ url_for('groups.search_group') }}">
-    {{ form.csrf_token }}
-    
-    <fieldset class="form-field">
-        {{ form.field.label}}
-        {{ form.field() }}
-    </fieldset>
+<div class="add-name">
+    <form class="form-horizontal" method="POST" action="{{ url_for('groups.search_group') }}">
+        {{ form.csrf_token }}    
+        <div class="form-group">
+            <label class="col-sm-2">Search Field</label>
+            <div class="col-sm-10">
+                <div class="dropdown search-options">
+                    {{ form.field(class="btn btn-primary dropdown-toggle") }}
+                </div>
+                {{ form.keyword(class="form-control") }}
+            </div>
+        </div>
+        {{ form.submit(class="btn btn-primary gp-update") }}
+    </form>
+</div>
 
-    <fieldset class="form-field">
-        {{ form.keyword.label }}
-        {{ form.keyword() }}
-    </fieldset>
-
-    {{ form.submit }}
-</form>
 {% if groups | length > 0 %}
-    <h3>Group search results</h3>
-    <table>
-        <thead>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Postcode</th>
-            <th>Location</th>
-        </thead>
-        {% for group in groups %}
-        <tr>
-            <td><a href="{{ url_for('groups.group_details', id=group.id) }}">{{ group.name }}</a></td>
-            <td>{{ group.description }}</td>
-            <td>{{ group.postcode }}</td>
-            <td>{{ group.suburb }}, {{ group.state }}</td>
-            <td>
-                <button>
-                    <form method="POST" action="{{ url_for('groups.join_group', id=group.id) }}">
-                        {{ form2.csrf_token }}
-                        {{ form2.submit }}
-                    </form>
-                </button>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+<div class="profile-location search-results">
+    <div class="table-responsive location-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Group</th>
+                    <th>Postcode</th>
+                    <th>Location</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                <tr>
+                    <td><a href="{{ url_for('groups.group_details', id=group.id) }}">{{ group.name }}</a></td>
+                    <td>{{ group.postcode }}</td>
+                    <td>{{ group.suburb }}, {{ group.state }}</td>
+                    <td class="actions">
+                        <form method="POST" action="{{ url_for('groups.join_group', id=group.id) }}">
+                            {{ form2.csrf_token }}
+                            {{ form2.submit(class="btn btn-primary") }}
+                        </form>    
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endif %}
 {% endblock %}
