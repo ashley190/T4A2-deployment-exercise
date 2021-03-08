@@ -31,6 +31,9 @@ This section is a continuation of the project tracking activity from PART A-R6. 
 ![Mar 6](docs/trello_screenshots/210306.png)
 *Mar 6*: Backend and template development and testing completed. Moved due date for front end and deployment to allow for a little more time on front end styling.
 
+![Mar 8](docs/trello_screenshots/210308.png)
+*Mar 8*: Frontend styles completed. MVP completed and ready to be deployed. Allowed an extra day for deployment as most tests are already covered in automated tests.
+
 ## Deployment/Installation steps
 ### Continuous integration/Continuous Deployment(CI/CD)
 
