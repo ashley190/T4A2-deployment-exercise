@@ -1,7 +1,78 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Group: {{ group_name }}</h1>
+<div class="group-details">
+    <h4>{{ group_name }}</h4>
+    <p>{{ group_description }}</p>
+</div>
+
+{% if data %}
+<h4>Posts</h4>
+{% for item in data %}
+<div>
+    <div class="post-component">
+        <div class="poster">
+            {% if not item[1] %}
+            <img class="post-photo" src="{{ url_for('static', filename='default.png') }}" width="200" height="200"/>
+            {% else %}
+            <img class="post-photo" src="{{ item[1] }}" width="200" height="200"/>
+            {% endif %}
+            <!-- <img class="post-photo" src="assets/img/yoda.jpg"> -->
+            <small>{{ item[0].name }}</small>
+        </div>
+        <div class="post-component">
+            <p class="post">{{ item[0].post }}</p>
+            {% if item[0].profile_id == profile_id %}
+            <div>
+                <form method="POST" action="{{ url_for('posts.remove_post', id=item[0].id) }}">
+                    {{ form.csrf_token }}
+                    <a class="btn btn-primary post-action" role="button" href="{{ url_for('posts.update_post', id=item[0].id) }}">
+                        <i class="icon ion-android-create post-icon"></i>
+                    </a>    
+                    <button class="btn btn-primary post-action" type="submit">
+                    <i class="icon ion-android-delete post-icon"></i>
+                    </button>
+                    <a class="btn btn-primary add-post" role="button" href="{{ url_for('posts.post_comment', id=item[0].id) }}">
+                        <i class="fa fa-comments"></i>
+                    </a>        
+                </form>
+            {% else %}
+            <a class="btn btn-primary add-post" role="button" href="{{ url_for('posts.post_comment', id=item[0].id) }}">
+                <i class="fa fa-comments"></i>
+            </a>
+            {% endif %}
+            </div>    
+        </div>
+    </div>
+    {% if item[2] %}
+    {% for comment in item[2] %}
+    <div class="post-component comment">
+        <div class="poster">
+            {% if not comment[1] %}
+            <img class="post-photo" src="{{ url_for('static', filename='default.png') }}" width="30" height="30"/>
+            {% else %}                
+            <img class="post-photo" src="{{ comment[1] }}" width="30" height="30"/>
+
+            <!-- <img class="post-photo" src="assets/img/yoda.jpg"> -->
+            <small>{{ comment[0].name }}</small>
+            {% endif %}
+        </div>
+        <p class="post">{{ comment[0].comment }}</p>        
+    </div>
+    {% endfor %}
+    {% endif %}
+    <!-- <a class="btn btn-primary add-post" role="button" href="{{ url_for('posts.post_comment', id=item[0].id) }}">Comment</a> -->
+</div>
+{% endfor %}
+{% endif %}
+<a class="btn btn-primary add-post" role="button" href="{{ url_for('posts.create_group_posts', id=id) }}">New post</a>
+
+
+
+
+
+
+
+<!-- <h1>Group: {{ group_name }}</h1>
 <h2>Location: {{ group_location }}</h2>
 <p>{{ group_description }}</p>
 
@@ -24,8 +95,11 @@
                 {% endif %}
                 {{ item[0].name }}
             </td>
-            <td>{{ item[0].post }}</td>
-            <td>
+            <td>{{ item[0].post }}</td> -->
+
+
+
+            <!-- <td>
             {% if item[2] %}
                 {% for comment in item[2] %}
                 <li>
@@ -41,7 +115,9 @@
             {% endif %}
             <a href="{{ url_for('posts.post_comment', id=item[0].id) }}">Add Comment</a>
             </td>
-            <td>
+
+ -->
+            <!-- <td>
                 {% if item[0].profile_id == profile_id %}
                 <a href="{{ url_for('posts.update_post', id=item[0].id) }}">Update Post</a>
                 <button>
@@ -51,12 +127,12 @@
                     </form>
                 </button>
                 {% endif %}
-            </td>
-        </tr>
+            </td> -->
+        <!-- </tr>
         {% endfor %}
         </tbody>
 </table>
-{% endif %}
-<a href="{{ url_for('posts.create_group_posts', id=id) }}">Add post</a>
+{% endif %} -->
+<!-- <a href="{{ url_for('posts.create_group_posts', id=id) }}">Add post</a> -->
 
 {% endblock %}
