@@ -34,6 +34,9 @@ This section is a continuation of the project tracking activity from PART A-R6. 
 ![Mar 8](docs/trello_screenshots/210308.png)
 *Mar 8*: Frontend styles completed. MVP completed and ready to be deployed. Allowed an extra day for deployment as most tests are already covered in automated tests.
 
+![Mar 10](docs/trello_screenshots/210310.png)
+*Mar 10*: Successfully deployed application into AWS using ECS. Manual testing underway.
+
 ## Deployment/Installation steps
 ### Continuous integration/Continuous Deployment(CI/CD)
 
