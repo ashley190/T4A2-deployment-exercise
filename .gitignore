@@ -5,3 +5,4 @@ __pycache__
 :testdb
 *.pyc
 dev-T4A2.rtf
+src/.DS_Store
