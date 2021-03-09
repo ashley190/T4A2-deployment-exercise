@@ -1,3 +1,14 @@
+Deployment notes
+
+Set up remote db
+Clone from repo
+Set up env variables
+set up venv
+pip install dependencies
+test db connection and app on localhost
+install gunicorn
+
+
 # PART B DOCUMENTATION
 ## Entity Relationship Diagram(ERD)
 ![ERD](docs/ERD.png)
