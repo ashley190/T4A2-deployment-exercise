@@ -62,7 +62,7 @@ jobs:
         id: render-web-container
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: task-definition.json
+          task-definition: deployment/task-definition.json
           container-name: mylocale-app
           image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
