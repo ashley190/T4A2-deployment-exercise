@@ -2,6 +2,7 @@
 from models.Profile import Profile
 from models.ProfileImage import ProfileImage
 from models.Locations import Location
+from models.Test import Test
 from main import db
 from flask import (current_app, Blueprint, render_template,
                    redirect, url_for, flash, request)
@@ -12,6 +13,12 @@ from forms import (ProfileForm, ProfileImageUpload,
                    DeleteButton, SearchLocation, AddButton)
 
 profile = Blueprint('profile', __name__, url_prefix="/web/profile")
+
+@profile.route("/test", methods=["GET"])
+@login_required
+def test():
+    tests = Test.get.all()
+    return f"{tests}"
 
 
 @profile.route("/", methods=["GET"])
