@@ -40,7 +40,6 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v2
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with: 
@@ -54,19 +53,18 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: mylocale-cd
+          ECR_REPOSITORY: mylocale
           IMAGE_TAG: latest
         run: | 
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      # - name: Build and push to ECS
-      #   with:
-      #     account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-      #     repo: mylocale-cd
-      #     tags: latest
-      #     create_repo: true
-      #     set_repo_policy: false
-
+      - name: Render Amazon ECS task definition
+        id: render-web-container
+        uses: aws-actions/aws-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: mylocale-app
+          image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 # # Build and push to dockerhub
 #       - name: Set up QEMU
