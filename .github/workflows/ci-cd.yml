@@ -38,9 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: flask-deploy
     steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v2
-        # Build and push to ecs
+      # - name: Checkout Branch
+      #   uses: actions/checkout@v2
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with: 
@@ -48,6 +48,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
       # - name: Build and push to ECS
       #   with:
       #     account_id: ${{ secrets.AWS_ACCOUNT_ID }}
