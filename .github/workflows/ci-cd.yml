@@ -58,17 +58,32 @@ jobs:
         run: | 
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      - name: Render Amazon ECS task definition
-        # env:
-        #   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        #   ECR_REPOSITORY: mylocale-cd
-          # IMAGE_TAG: latest
-        id: render-web-container
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
+      - name: deploy to ECS
+        uses: modum.io/aws-ecs-deploy-service-by-template@v.1.0.0
         with:
-          task-definition: deployment/task-definition.json
-          container-name: mylocale-app
           image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          template-task-definition: MyLocale-Server
+          container-name: mylocale-app-cd
+          target-task-definition: MyLocale-Server
+          cluster: mylocale-cluster
+          service: mylocale
+
+
+
+
+
+
+      # - name: Render Amazon ECS task definition
+      #   # env:
+      #   #   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #   #   ECR_REPOSITORY: mylocale-cd
+      #     # IMAGE_TAG: latest
+      #   id: render-web-container
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: deployment/task-definition.json
+      #     container-name: mylocale-app
+      #     image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           
 
 # # Build and push to dockerhub
