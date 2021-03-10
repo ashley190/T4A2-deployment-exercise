@@ -14,9 +14,13 @@ from forms import (ProfileForm, ProfileImageUpload,
 
 profile = Blueprint('profile', __name__, url_prefix="/web/profile")
 
+
 @profile.route("/test", methods=["GET"])
 @login_required
 def test():
+    new_test = Test(name="test1", test=True)
+    db.session.add(new_test)
+    db.session.commit()
     tests = Test.get.all()
     return f"{tests}"
 
