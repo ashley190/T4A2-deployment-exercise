@@ -21,7 +21,7 @@ def test():
     new_test = Test(name="test1", test=True)
     db.session.add(new_test)
     db.session.commit()
-    tests = Test.get.all()
+    tests = Test.query.all()
     return f"{tests}"
 
 

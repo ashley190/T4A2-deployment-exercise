@@ -7,4 +7,3 @@ RUN pip3 install -r requirements.txt
 ADD start.sh /
 RUN chmod +x /start.sh
 CMD ["/start.sh"]
-# CMD [ "gunicorn", "-b", "0.0.0.0", "-w", "3", "main:create_app()" ]
