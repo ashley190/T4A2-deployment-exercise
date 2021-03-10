@@ -50,7 +50,6 @@
         "dockerLabels": null,
         "systemControls": null,
         "privileged": null,
-        // "name": "mylocale-app"
       }
     ],
     "placementConstraints": [],
