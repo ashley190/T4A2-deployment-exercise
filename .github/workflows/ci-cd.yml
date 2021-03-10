@@ -58,15 +58,21 @@ jobs:
         run: | 
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      - name: deploy to ECS
-        uses: modum-io/aws-ecs-deploy-service-by-template@v.1.0.0
-        with:
-          image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          template-task-definition: MyLocale-Server
-          container-name: mylocale-app-cd
-          target-task-definition: MyLocale-Server
-          cluster: mylocale-cluster
-          service: mylocale
+          aws ecs update-service --cluster mylocale-cluster --service mylocale --force-new-deployment
+
+
+
+
+
+      # - name: deploy to ECS
+      #   uses: modum-io/aws-ecs-deploy-service-by-template@v.1.0.0
+      #   with:
+      #     image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      #     template-task-definition: MyLocale-Server
+      #     container-name: mylocale-app-cd
+      #     target-task-definition: MyLocale-Server
+      #     cluster: mylocale-cluster
+      #     service: mylocale
 
 
 
