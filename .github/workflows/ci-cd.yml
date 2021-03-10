@@ -63,7 +63,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: deployment/task-definition.json
-          container-name: mylocale-app
+          container-name: mylocale-app-cd
           image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 # # Build and push to dockerhub
