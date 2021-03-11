@@ -23,7 +23,7 @@ class RegistrationForm(FlaskForm):
     password = PasswordField(
         "Password",
         validators=[
-            Length(min=6, message="Password must be at least 8 characters"),
+            Length(min=6, message="Password must be at least 6 characters"),
             DataRequired()
         ]
     )
@@ -71,7 +71,7 @@ class ProfileForm(FlaskForm):
 class ProfileImageUpload(FlaskForm):
     image = FileField("Profile Image", validators=[
         FileRequired(),
-        FileAllowed(['jpg', 'png'], 'Images only!')
+        FileAllowed(['jpg', 'png'], message="Must be jpg or png.")
     ])
 
     submit = SubmitField("Upload Profile Image")
@@ -115,10 +115,7 @@ class CreateGroup(FlaskForm):
 class UpdateGroup(FlaskForm):
     """Update Group"""
     group_name = StringField(
-        "Group Name",
-        validators=[
-            Length(min=1, message="Group name must be at least 1 character")
-        ]
+        "Group Name"
     )
 
     group_description = TextAreaField(

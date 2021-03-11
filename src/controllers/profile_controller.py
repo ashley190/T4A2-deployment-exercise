@@ -76,6 +76,7 @@ def profile_image():
     profile picture upload to designated AWS S3 bucket
     """
     user_id, profile = Helpers.retrieve_profile()
+    delete = DeleteButton()
 
     form = ProfileImageUpload()
     if form.validate_on_submit():
@@ -94,7 +95,6 @@ def profile_image():
             db.session.commit()
             flash("Image upload successful")
         return redirect(url_for("profile.profile_page"))
-    delete = DeleteButton()
     return render_template("image_upload.html", form=form, delete=delete)
 
 
@@ -116,7 +116,6 @@ def remove_image():
             db.session.delete(profile.profile_image)
             db.session.commit()
             flash("Image removed")
-        flash("Image not found")
     return redirect(url_for("profile.profile_page"))
 
 

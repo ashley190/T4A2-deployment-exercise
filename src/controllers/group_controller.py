@@ -5,7 +5,6 @@ from models.Locations import Location
 from models.Group_members import GroupMembers
 from models.Posts import Posts
 from models.Comments import Comments
-from schemas.GroupSchema import group_schema
 from schemas.LocationSchema import location_schema
 from controllers.controller_helpers import Helpers
 from main import db
@@ -198,15 +197,19 @@ def update_group(id):
         return abort(401, description="Not authorised to update group")
 
     group_location = Location.query.filter_by(group_id=id).first()
-    group = Groups.query.filter_by(id=id)
+    group = Groups.query.filter_by(id=id).first()
 
     if form.validate_on_submit():
-        data = {
-            "name": form.group_name.data,
-            "description": form.group_description.data
-        }
-        fields = group_schema.load(data, partial=True)
-        group.update(fields)
+        if not form.group_name.data and form.group_description.data:
+            group.description = form.group_description.data
+        elif form.group_name.data and not form.group_description.data:
+            group.name = form.group_name.data
+        elif not form.group_name.data and not form.group_description.data:
+            flash("Group not updated")
+            return redirect(url_for("groups.groups_page", id=id))
+        else:
+            group.name = form.group_name.data
+            group.description = form.group_description.data
         db.session.commit()
         flash("Group updated")
         return redirect(url_for("groups.groups_page", id=id))

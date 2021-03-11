@@ -69,7 +69,7 @@ class TestAuth(Helpers):
         self.assertIn(
             b"Field must be at least 6 characters long.", response2.data)
         self.assertIn(
-            b"Password must be at least 8 characters", response3.data)
+            b"Password must be at least 6 characters", response3.data)
         self.assertIn(b"Password must match.", response4.data)
 
     def test_login(self):

@@ -268,6 +268,8 @@ class TestGroups(Helpers):
                 self.assertEqual(context["location"], location)
 
             with captured_templates(self.app) as templates:
+                group_details = Groups.query.filter_by(
+                    id=selected_admin_id).first()
                 response = c.post(
                     url_for("groups.update_group", id=selected_admin_id),
                     data=data, follow_redirects=True)
@@ -287,7 +289,7 @@ class TestGroups(Helpers):
                     f"{location.suburb}, {location.state}"), response.data)
                 self.assertEqual(new_group_details.name, data["group_name"])
                 self.assertEqual(
-                    new_group_details.description, data["description"])
+                    new_group_details.description, group_details.description)
 
         # test get and post requests for non-group admins and non-members
         response_1 = self.get_request(url_for(
