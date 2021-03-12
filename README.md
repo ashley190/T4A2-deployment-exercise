@@ -1,5 +1,5 @@
 # PART B DOCUMENTATION
-## ADDRESSING PROJECT REQUIREMENTS
+## PROJECT REQUIREMENTS
 
 # R5, R7, R11: Deployed Website
 **URL**: https://mylocale.ml/web/login
@@ -48,7 +48,7 @@ Page for group admin to update group details and/or location.
 
 **Search group page**
 ![Search group](docs/website_screenshots/search_group.png)
-Groups can be looked up by keyword or postcode. Keyword searches.
+Groups can be looked up by keyword or postcode. Keyword searches for matching words in group name, group description and/or group location. Search results will only show groups where user is not a member.
 
 **Group details page**
 ![Group details](docs/website_screenshots/group_details.png)
@@ -66,7 +66,7 @@ Page for originer author of post to update their post
 ![Comment](docs/website_screenshots/comment.png)
 Page for group members to comment against a group post.
 
-## R13: PART A Documentation (Updated)
+# R13: PART A Documentation (Updated)
 The updated submission for Part A can be found [here](docs/PartA_submission.md).
 
 This documentation submitted as part of the planning phase (Part A) has been updated in the following sections:-
@@ -76,7 +76,7 @@ This documentation submitted as part of the planning phase (Part A) has been upd
 3. Statement confirming the non-implementation of planned additional features (account management page).
 
 
-## R1: PROJECT CODE
+# R1: PROJECT CODE
 
 This project is coded using Python's flask framework following the Model-View-Controller(MVC) pattern and connects to a database using SQLAlchemy ORM as well as SQLAlchemy-Marshmallow for data serialisation/deserialisation. The project source code is located [here](src) organised into the following files/folders:-
 
@@ -100,7 +100,9 @@ This project is coded using Python's flask framework following the Model-View-Co
 
 Source control is implemented using Git and Github. All work is pushed to main branch and feature branches in stages. Each feature has a branch (not deleted) although feature has already be completed and merged into the main branch. A capture of the history of commits and branches used is visualised [here](docs/source_control.txt). This is captured in the afternoon on Mar 12.
 
-R3, R4: Project Management methodology
+# R3, R4: Project Management and task delegation
+
+Trello board: https://trello.com/b/awN6ojS8/t4a2
 
 Project workflow was followed as described in [Part A submission](docs/PartA_submission.md). This project is implemented using the Kanban methodology using Trello. Tasks are updated at the end of each day/each task on the board. Each task is labelled to signify a different aspect of the project (task delegation) and assigned a due date. Some dates were moved during the implementation as tasks are taking longer/shorter than expected to complete. Below are some trello board screenshots throughout the project implementation phase as a follow on from the project planning phase:-
 
@@ -137,6 +139,9 @@ Project workflow was followed as described in [Part A submission](docs/PartA_sub
 ![Mar 12](docs/trello_screenshots/210312.png)
 *Mar 12*: Application testing and deployment complete. Finalising documentation for submission.
 
+![Mar 12](docs/trello_screenshots/210312_final.png)
+*Mar 12 (end of day)*: Documentation completed. Ready for submission.
+
 
 # R6: Deployment to a cloud hosting service
 
@@ -150,7 +155,7 @@ The developer ended up with manual deployment with deploying separate components
 
 ![AAD](docs/AAD_updated.png)
 
-# R8, R9: User testing
+# R8, R9: Testing
 
 Two types of testing were done during this phase of the project.
 
@@ -267,10 +272,10 @@ This assumes that you have docker installed on your machine.
     `docker stop {container_name}` to stop and remove container.
 
 
-### Continuous integration/Continuous Deployment(CI/CD)
+## Continuous integration/Continuous Deployment(CI/CD)
 YAML file can be found [here](.github/workflows/ci-cd.yml).
 
-**Continuous Integration(CI)**
+### **Continuous Integration(CI)**
 
 The YAML file detailing Continuous Integration/Continuous Deployment workflows can be found here: [CI/CD workflow](.github/workflows/ci-cd.yml).
 
@@ -281,7 +286,7 @@ The steps involved in the Continuous Integration(CI) workflow upon pushing onto 
 4. Run Automated tests. This step uses secret environment variables stored in the 'flask-testing' environment on GitHub
 5. Checks code according to PEP8 style guide using flake8
 
-**Continuous Deployment(CD)**
+### **Continuous Deployment(CD)**
 
 Note: This was initially written for the deployment of the application as a docker image using AWS Elastic Container Service. 
 
@@ -316,3 +321,9 @@ RESTful API endpoints following restful conventions are documented in the format
 
 * [Raw format](docs/api_endpoints.yml)
 * [Swagger viewer](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/ashley190/T4A2/main/docs/api_endpoints.yml)
+
+
+# References and Attributions:
+1. Australian Suburb and Postcode API | Home. Postcodeapi.com.au. Published 2021. Accessed March 12, 2021. http://postcodeapi.com.au/
+
+‌2. Freepik. Freepik. Published 2021. Accessed March 12, 2021. https://www.freepik.com/free-vector/animal-avatars-collection_766290.htm
