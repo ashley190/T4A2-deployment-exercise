@@ -292,7 +292,7 @@ Note: This was initially written for the deployment of the application as a dock
 
 Prerequisites: 
 1. Image of the same name in ECR.
-2. Task definitions set up in ECS
+2. Task definitions set up in ECS with image pulling environment variables from a file in S3 bucket.
 3. ECS Cluster established named 'mylocale-cluster'
 4. ECS Cluster service set up named 'mylocale'
 
