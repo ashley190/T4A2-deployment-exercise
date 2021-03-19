@@ -1,5 +1,5 @@
 # Introduction
-This is an AWS deployment exercise using a Flask application developed for one of my Coder Academy assessments. Deployment was attempted using the following methods:-
+This is an AWS deployment exercise using a Flask application developed for one of my Coder Academy assessments. This repo acts as my own notes on how to deploy successfully using different methods attempted. Deployment was attempted using the following methods:-
 
 ## Manual deployment
 
@@ -23,7 +23,8 @@ The following cloud architecture applies to the deployment using AWS Elastic Con
 Deployment using ECS requires manual set up of the following components:-
 
 1. VPC - With public and private subnets in two separate Availability zones(for load balancing purposes), a third availability zone to house the private subnet for the database. All private subnets has egress traffic configured to go through the NAT gateway. 
-2. ELB - An application load balancer set up connected to the public subnets in the availability zones that are to host the ECS containers and listeners routed directly to the containers (once they are set up).
+2. ELB - An application load balancer set up connected to the public subnets in the availability zones that are to host the ECS containers and listeners routed directly to the containers (once they are set up). 
+3. Setting up of DNS resolution with Route 53 and HTTPS for the ELB is similar to the steps taken in the manual deployment process.
 
 Setting up ECS
 
